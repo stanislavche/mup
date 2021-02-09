@@ -23,7 +23,7 @@ const MupCanvas = () => {
                 canvas = canvasRef.current;
                 ctx = canvas.getContext("2d");
                 ctx.lineWidth = 2;
-                ctx.lineCap = "round";
+                ctx.lineCap = "butt";
                 bars = Math.round(canvas.width);
                 requestRef.current = requestAnimationFrame(drawCanvas);
             }
@@ -44,6 +44,7 @@ const MupCanvas = () => {
         analyser.connect(context.destination);
 
         frequencyArray = new Uint8Array(analyser.frequencyBinCount);
+        console.log(frequencyArray);
         audio.play();
     };
 
@@ -54,7 +55,7 @@ const MupCanvas = () => {
             analyser.getByteFrequencyData(frequencyArray);
 
             const centerY = canvas.height / 2;
-            for (var i = 0; i < bars; i++) {
+            for (var i = 0; i < frequencyArray.length; i++) {
                 const height = frequencyArray[i];
                 if (height > 0) drawLine(i * 2, height, centerY, ctx);
             }
@@ -67,17 +68,19 @@ const MupCanvas = () => {
     const drawLine = (i, height, centerY, ctx) => {
         ctx.beginPath();
         ctx.strokeStyle = '#dff8d0';
-        ctx.moveTo(i, centerY - height);
-        ctx.lineTo(i, centerY);
+        ctx.moveTo(i, centerY - (height/2));
+        ctx.lineTo(i, centerY + (height/2));
         ctx.stroke();
 
-        if (height < 200) {
+        if (height > 150) {
            drawStar(i, height, centerY, ctx);
         }
     };
 
     const drawStar = (i, height, centerY, ctx) => {
-        ctx.fillRect(i, height, 2, 2);
+        ctx.fillStyle = '#86c06c';
+        ctx.fillRect(i, centerY - height - 30, 2, 2);
+        ctx.fillRect(i, centerY + height + 30, 2, 2);
         //console.log(i, height);
     }
 
