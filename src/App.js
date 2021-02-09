@@ -1,9 +1,11 @@
 import './App.css';
+import './scss-variables.scss';
+import MupCanvas from "./components/MupCanvas";
 
 function App() {
   return (
     <div className="App">
-      <h1>МИР</h1>
+        <MupCanvas />
     </div>
   );
 }
