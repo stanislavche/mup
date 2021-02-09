@@ -1,34 +1,78 @@
-import React, { Component } from 'react';
-import {createRef} from "react/cjs/react.production.min";
+import React, { useRef } from "react";
 
-class MupCanvas extends Component {
-    state = { width: document.body.clientWidth, height: document.body.clientHeight };
-    canvasRef = createRef();
+let frequencyArray = [];
+let analyser;
+let canvas;
+let ctx;
+let bars;
 
-    updateDimensions = () => {
-        this.setState({ width: document.body.clientWidth, height: document.body.clientHeight });
-        this.updateCanvas();
+const MupCanvas = () => {
+    const canvasRef = useRef(null);
+    const requestRef = useRef(null);
+
+    const handleInit = () => {
+        initAudio();
+        canvas = canvasRef.current;
+        ctx = canvas.getContext("2d");
+        ctx.lineWidth = 0.5;
+        ctx.lineCap = "round";
+        bars = Math.round(canvas.width);
+        requestRef.current = requestAnimationFrame(drawCanvas);
     };
 
-    componentDidMount() {
-        window.addEventListener('resize', this.updateDimensions);
-        this.updateCanvas();
-    }
+    const initAudio = () => {
+        const audio = new Audio();
+        audio.src =
+            "https://s3.us-west-2.amazonaws.com/storycreator.uploads/ck9kpb5ss0xf90132mgf8z893?client_id=d8976b195733c213f3ead34a2d95d1c1";
+        audio.crossOrigin = "anonymous";
+        audio.load();
 
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.updateDimensions);
-    }
+        const context = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = context.createAnalyser();
+        const source = context.createMediaElementSource(audio);
 
-    updateCanvas() {
-        const ctx = this.canvasRef.current.getContext('2d');
-        ctx.fillRect(0,0, 100, 100);
-    }
+        source.connect(analyser);
+        analyser.connect(context.destination);
 
-    render() {
-        return (
-            <canvas ref={this.canvasRef} width={this.state.width} height={this.state.height}/>
-        );
-    }
-}
+        frequencyArray = new Uint8Array(analyser.frequencyBinCount);
+        audio.play();
+    };
+
+    // draw the whole thing
+    const drawCanvas = () => {
+        if (canvasRef.current) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            analyser.getByteFrequencyData(frequencyArray);
+
+            const centerY = canvas.height / 2;
+            for (var i = 0; i < bars; i++) {
+                const height = frequencyArray[i];
+                if (height > 0) drawLine(i * 2, height, centerY, ctx);
+            }
+
+            requestRef.current = requestAnimationFrame(drawCanvas);
+        }
+    };
+
+    // dray lines around the circle
+    const drawLine = (i, height, centerY, ctx) => {
+        ctx.beginPath();
+        ctx.moveTo(i, centerY + height);
+        ctx.lineTo(i, centerY - height);
+        ctx.stroke();
+    };
+
+    return (
+        <>
+            <button onClick={handleInit}>Start Visualizer</button>
+            <canvas
+                ref={canvasRef}
+                style={{ background: "#f5f5f5" }}
+                width={window.innerWidth}
+                height={window.innerHeight}
+            />
+        </>
+    );
+};
 
 export default MupCanvas;
