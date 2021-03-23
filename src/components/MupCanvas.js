@@ -109,7 +109,7 @@ const MupCanvas = () => {
     };
 
     const drawImage = () => {
-        ctx.drawImage(image, canvas.width/2 - 150, canvas.height/2 - 150, 300, 300);
+        ctx.drawImage(image, -112, -140, 240, 240);
     };
 
     return (
