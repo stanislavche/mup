@@ -5,7 +5,6 @@ let frequencyArray = [];
 let analyser;
 let canvas;
 let ctx;
-let bars;
 const audio = new Audio();
 
 const MupCanvas = () => {
@@ -22,10 +21,7 @@ const MupCanvas = () => {
                 initAudio();
                 canvas = canvasRef.current;
                 ctx = canvas.getContext("2d");
-                ctx.lineWidth = 2;
-                ctx.lineCap = "butt";
-                bars = Math.round(canvas.width);
-                requestRef.current = requestAnimationFrame(drawCanvas);
+                requestRef.current = requestAnimationFrame(updateVisualization);
             }
         }
 
@@ -38,51 +34,53 @@ const MupCanvas = () => {
 
         const context = new (window.AudioContext || window.webkitAudioContext)();
         analyser = context.createAnalyser();
+        analyser.fftSize = 512;
         const source = context.createMediaElementSource(audio);
 
         source.connect(analyser);
         analyser.connect(context.destination);
 
         frequencyArray = new Uint8Array(analyser.frequencyBinCount);
-        console.log(frequencyArray);
         audio.play();
     };
 
     // draw the whole thing
-    const drawCanvas = () => {
+    const drawCanvas = (frequencyArray) => {
         if (canvasRef.current) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            analyser.getByteFrequencyData(frequencyArray);
+            ctx.save();
+            //ctx.globalCompositeOperation='source-over';
+            ctx.scale(0.5, 0.5);
+            ctx.translate(window.innerWidth, window.innerHeight);
 
-            const centerY = canvas.height / 2;
+
+            var bass = Math.floor(frequencyArray[1]); //1Hz Frequenz
+            var radius = 0.45 * canvas.width <= 450 ? -(bass * 0.25 + 0.45 * canvas.width) : -(bass * 0.25 + 300);
             for (var i = 0; i < frequencyArray.length; i++) {
-                const height = frequencyArray[i];
-                if (height > 0) drawLine(i * 2, height, centerY, ctx);
+                const position = frequencyArray[i];
+                if (i > 0) {
+                    ctx.fillStyle = '#86c06c';
+                    ctx.fillRect(0, radius, 4, -position);
+                    ctx.rotate((180 / 128) * Math.PI / 180);
+                }
             }
-
-            requestRef.current = requestAnimationFrame(drawCanvas);
+            for (var i = 0; i < frequencyArray.length; i++) {
+                const position = frequencyArray[i];
+                if (i > 0) {
+                    ctx.fillStyle = '#316851';
+                    ctx.fillRect(0, radius, 3, -position);
+                    ctx.rotate(-(180 / 128) * Math.PI / 180);
+                }
+            }
+            ctx.restore();
         }
     };
 
-    // dray lines around the circle
-    const drawLine = (i, height, centerY, ctx) => {
-        ctx.beginPath();
-        ctx.strokeStyle = '#dff8d0';
-        ctx.moveTo(i, centerY - (height/2));
-        ctx.lineTo(i, centerY + (height/2));
-        ctx.stroke();
-
-        if (height > 150) {
-           drawStar(i, height, centerY, ctx);
-        }
+    function updateVisualization () {
+        analyser.getByteFrequencyData(frequencyArray);
+        drawCanvas(frequencyArray);
+        requestRef.current = requestAnimationFrame(updateVisualization);
     };
-
-    const drawStar = (i, height, centerY, ctx) => {
-        ctx.fillStyle = '#86c06c';
-        ctx.fillRect(i, centerY - height - 30, 2, 2);
-        ctx.fillRect(i, centerY + height + 30, 2, 2);
-        //console.log(i, height);
-    }
 
     return (
         <>
