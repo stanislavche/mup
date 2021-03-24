@@ -102,16 +102,16 @@ const MupCanvas = () => {
                 ctx.save();
                 //ctx.globalCompositeOperation = 'color-dodge';
                 ctx.translate(window.innerWidth / 2, window.innerHeight / 2);
-                drawImage();
-                drawCanvas();
 
+                drawCanvas();
+                drawImage();
                 requestRef.current = requestAnimationFrame(updateVisualization);
             }
         }
     };
 
     const drawImage = () => {
-        ctx.drawImage(image, -104, -120, 220, 220);
+        ctx.drawImage(image, canvas.width/2 -104, canvas.height/2 -120, 220, 220);
     };
 
     return (
