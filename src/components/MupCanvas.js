@@ -38,7 +38,7 @@ const MupCanvas = () => {
     const initCanvas = () => {
         canvas = canvasRef.current;
         ctx = canvas.getContext("2d");
-        requestRef.current = requestAnimationFrame(updateVisualization);
+        updateVisualization();
     };
 
     const initAudio = () => {
@@ -66,6 +66,7 @@ const MupCanvas = () => {
         clearTimeout(timeout);
         isPlaying = true;
         initCanvas();
+
     }
 
     // draw the whole thing
@@ -78,16 +79,16 @@ const MupCanvas = () => {
                 const position = frequencyArray[i];
                 if (i > 0) {
                     ctx.fillStyle = '#86c06c';
-                    ctx.fillRect(0, radius, 3, -position/2);
-                    ctx.rotate((180 / 128) * Math.PI / 180);
+                    ctx.fillRect(0, radius, 2, -position/2);
+                    ctx.rotate((180 / 256) * Math.PI / 180);
                 }
             }
             for (let i = 0; i < frequencyArray.length; i++) {
                 const position = frequencyArray[i];
                 if (i > 0) {
                     ctx.fillStyle = '#316851';
-                    ctx.fillRect(0, radius, 3, -position/2);
-                    ctx.rotate(-(180 / 128) * Math.PI / 180);
+                    ctx.fillRect(0, radius, 2, -position/2);
+                    ctx.rotate((180 / 256) * Math.PI / 180);
                 }
             }
             ctx.restore();
@@ -99,17 +100,18 @@ const MupCanvas = () => {
             if (canvasRef.current) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.save();
-                ctx.globalCompositeOperation = 'color-dodge';
+                //ctx.globalCompositeOperation = 'color-dodge';
                 ctx.translate(window.innerWidth / 2, window.innerHeight / 2);
                 drawImage();
                 drawCanvas();
+
                 requestRef.current = requestAnimationFrame(updateVisualization);
             }
         }
     };
 
     const drawImage = () => {
-        ctx.drawImage(image, -112, -140, 240, 240);
+        ctx.drawImage(image, -104, -120, 220, 220);
     };
 
     return (
@@ -117,10 +119,11 @@ const MupCanvas = () => {
             <button onClick={handleInit}>Start</button>
             <canvas
                 ref={canvasRef}
-                style={{ background: "#071820" }}
+                style={{ background: "transparent" }}
                 width={window.innerWidth}
                 height={window.innerHeight}
             />
+
         </>
     );
 };
