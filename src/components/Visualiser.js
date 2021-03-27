@@ -1,118 +1,111 @@
 import React, { useRef } from "react";
-import track1 from '../audio/promise.mp3';
 
-let frequencyArray = [],
-    analyser,
-    canvas,
-    ctx,
-    isPlaying,
-    timeout;
-const audio = new Audio();
-
-
-
-const Visualiser = () => {
-    const canvasRef = useRef(null);
-    const requestRef = useRef(null);
-
-    const handleInit = () => {
-        if (!audio.paused) {
-            audio.pause();
-        } else {
-            if (audio.src && audio.src.length) {
-                audio.play();
-            } else {
-                initAudio();
-            }
-        }
-
-    };
-
-    const initCanvas = () => {
-        canvas = canvasRef.current;
-        ctx = canvas.getContext("2d");
-        updateVisualization();
-    };
-
-    const initAudio = () => {
-        audio.addEventListener("pause", pauseEvent);
-        audio.addEventListener("play", playEvent);
-        audio.src = track1;
-        audio.crossOrigin = "anonymous";
-        audio.load();
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        analyser = audioContext.createAnalyser();
-        analyser.fftSize = 512;
-        const source = audioContext.createMediaElementSource(audio);
-        source.connect(analyser);
-        analyser.connect(audioContext.destination);
-        frequencyArray = new Uint8Array(analyser.frequencyBinCount);
-        audio.play();
-    };
-
-    const pauseEvent = () => {
-        timeout = setTimeout(()=>{
-            isPlaying = false;
-        },2000);
+class Visualiser extends React.Component {
+    constructor(props) {
+        super(props);
+        this.canvas = null;
+        this.ctx = null;
+        this.canvasRef = React.createRef();
+        this.requestRef = React.createRef();
+        this.isPlaying = false;
+        this.timeout = null;
+        this.analyser = null
+        this.frequencyArray = [];
+        this.updateVisualization = this.updateVisualization.bind(this);
     }
-    const playEvent = () => {
-        clearTimeout(timeout);
-        isPlaying = true;
-        initCanvas();
+
+    initCanvas() {
+        this.canvas = this.canvasRef.current;
+        this.ctx = this.canvas.getContext("2d");
+        this.updateVisualization();
+    }
+
+    initAudio() {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        this.analyser = audioContext.createAnalyser();
+        this.analyser.fftSize = 512;
+        const source = audioContext.createMediaElementSource(this.props.audio);
+        source.connect(this.analyser);
+        this.analyser.connect(audioContext.destination);
+        this.frequencyArray = new Uint8Array(this.analyser.frequencyBinCount);
+    }
+
+    pausePauseEvent() {
+        if(this.props.startAnimation) {
+            clearTimeout(this.timeout);
+            this.isPlaying = true;
+            this.initCanvas();
+        } else {
+            this.timeout = setTimeout(() => {
+                this.isPlaying = false;
+            },2000);
+        }
     }
 
     // draw the whole thing
-    const drawCanvas = () => {
-        if (canvasRef.current) {
-            analyser.getByteFrequencyData(frequencyArray);
-            let bass = Math.floor(frequencyArray[1]); //1Hz Frequenz
-            let radius = 0.45 * canvas.width <= 450 ? -(bass * 0.25 + 0.45 * canvas.width) : -(bass * 0.25 + 100);
-            for (let i = 0; i < frequencyArray.length; i++) {
-                const position = frequencyArray[i];
+    drawCanvas() {
+        if (this.canvasRef.current) {
+            this.analyser.getByteFrequencyData(this.frequencyArray);
+            let bass = Math.floor(this.frequencyArray[1]); //1Hz Frequenz
+            let radius = 0.45 * this.canvas.width <= 450 ? -(bass * 0.25 + 0.45 * this.canvas.width) : -(bass * 0.25 + 100);
+            for (let i = 0; i < this.frequencyArray.length; i++) {
+                const position = this.frequencyArray[i];
                 if (i > 0) {
-                    ctx.fillStyle = '#86c06c';
-                    ctx.fillRect(0, radius, 2, -position/2);
-                    ctx.rotate((180 / 256) * Math.PI / 180);
+                    this.ctx.fillStyle = '#86c06c';
+                    this.ctx.fillRect(0, radius, 2, -position/2);
+                    this.ctx.rotate((180 / 256) * Math.PI / 180);
                 }
             }
-            for (let i = 0; i < frequencyArray.length; i++) {
-                const position = frequencyArray[i];
+            for (let i = 0; i < this.frequencyArray.length; i++) {
+                const position = this.frequencyArray[i];
                 if (i > 0) {
-                    ctx.fillStyle = '#316851';
-                    ctx.fillRect(0, radius, 2, -position/2);
-                    ctx.rotate((180 / 256) * Math.PI / 180);
+                    this.ctx.fillStyle = '#316851';
+                    this.ctx.fillRect(0, radius, 2, -position/2);
+                    this.ctx.rotate((180 / 256) * Math.PI / 180);
                 }
             }
-            ctx.restore();
+            this.ctx.restore();
         }
-    };
+    }
 
-    function updateVisualization () {
-        if (isPlaying) {
-            if (canvasRef.current) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.save();
+    updateVisualization() {
+        if (this.isPlaying) {
+            if (this.canvasRef.current) {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                this.ctx.save();
                 //ctx.globalCompositeOperation = 'color-dodge';
-                ctx.translate(window.innerWidth / 2, window.innerHeight / 2);
+                this.ctx.translate(window.innerWidth / 2, window.innerHeight / 2);
 
-                drawCanvas();
-                requestRef.current = requestAnimationFrame(updateVisualization);
+                this.drawCanvas();
+                this.requestRef.current = requestAnimationFrame(this.updateVisualization);
             }
         }
-    };
+    }
 
-    return (
-        <>
-            <canvas
-                ref={canvasRef}
-                className={'visualiser-element'}
-                style={{ background: "transparent" }}
-                width={window.innerWidth}
-                height={window.innerHeight}
-            />
+    render() {
+        return (
+            <>
+                <canvas
+                    ref={this.canvasRef}
+                    className={'visualiser-element'}
+                    style={{background: "transparent"}}
+                    width={window.innerWidth}
+                    height={window.innerHeight}
+                />
 
-        </>
-    );
-};
+            </>
+        );
+    }
+
+    componentDidMount(prevProps) {
+        if (!prevProps || prevProps && prevProps.audio !== this.props.audio) {
+            this.initAudio();
+            this.pausePauseEvent();
+        }
+        if (!prevProps || prevProps && prevProps.startAnimation !== this.props.startAnimation) {
+            this.pausePauseEvent();
+        }
+    }
+}
 
 export default Visualiser;
