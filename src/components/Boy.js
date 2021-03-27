@@ -38,7 +38,6 @@ class Boy  extends React.Component {
         );
     }
     componentDidMount(prevProps) {
-        console.log(prevProps, this.props.startAnimation);
         if (!prevProps || prevProps && prevProps.startAnimation !== this.props.startAnimation) {
             this.drawImage();
         }

@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
 import track1 from '../audio/promise.mp3';
-import boy from '../image/boy.svg';
 
 let frequencyArray = [],
     analyser,
@@ -9,7 +8,6 @@ let frequencyArray = [],
     isPlaying,
     timeout;
 const audio = new Audio();
-const image = new Image();
 
 
 
@@ -24,16 +22,11 @@ const Visualiser = () => {
             if (audio.src && audio.src.length) {
                 audio.play();
             } else {
-                initImage();
                 initAudio();
             }
         }
 
     };
-
-    const initImage = () => {
-        image.src = boy;
-    }
 
     const initCanvas = () => {
         canvas = canvasRef.current;
@@ -66,7 +59,6 @@ const Visualiser = () => {
         clearTimeout(timeout);
         isPlaying = true;
         initCanvas();
-
     }
 
     // draw the whole thing
@@ -104,19 +96,13 @@ const Visualiser = () => {
                 ctx.translate(window.innerWidth / 2, window.innerHeight / 2);
 
                 drawCanvas();
-                drawImage();
                 requestRef.current = requestAnimationFrame(updateVisualization);
             }
         }
     };
 
-    const drawImage = () => {
-        ctx.drawImage(image, canvas.width/2 -104, canvas.height/2 -120, 220, 220);
-    };
-
     return (
         <>
-            <button onClick={handleInit}>Start</button>
             <canvas
                 ref={canvasRef}
                 className={'visualiser-element'}
