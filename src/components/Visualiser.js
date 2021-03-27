@@ -13,7 +13,7 @@ const image = new Image();
 
 
 
-const MupCanvas = () => {
+const Visualiser = () => {
     const canvasRef = useRef(null);
     const requestRef = useRef(null);
 
@@ -119,6 +119,7 @@ const MupCanvas = () => {
             <button onClick={handleInit}>Start</button>
             <canvas
                 ref={canvasRef}
+                className={'visualiser-element'}
                 style={{ background: "transparent" }}
                 width={window.innerWidth}
                 height={window.innerHeight}
@@ -128,4 +129,4 @@ const MupCanvas = () => {
     );
 };
 
-export default MupCanvas;
+export default Visualiser;
