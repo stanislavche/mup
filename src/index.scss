@@ -19,6 +19,19 @@ html, body {
   top: 0;
   left: 0;
 }
+.switcher{
+  font-size: 30px;
+  z-index: 1000;
+  cursor: pointer;
+  color: #86c06c;
+  position: fixed;
+  top: 0;
+  left: 0;
+  & + & {
+    left: 100px;
+  }
+}
+
 .startButton{
   font-size: 30px;
   z-index: 1000;
