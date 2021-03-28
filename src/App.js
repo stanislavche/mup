@@ -88,8 +88,12 @@ class App extends React.Component {
                     <Visualiser startAnimation={this.state.play} audio={this.state.audioObject}/>
                     <Boy imageType='boy' startAnimation={this.state.play} />
                     {renderButton()}
-                    <button className={"switcher"} onClick={this.initAudio.bind(this, 'next')}>next</button>
-                    <button className={"switcher"} onClick={this.initAudio.bind(this, 'prev')}>prev</button>
+                    <span className={"switcher next material-icons md-48"} onClick={this.initAudio.bind(this, 'next')}>
+                        arrow_forward_ios
+                    </span>
+                    <span className={"switcher prev material-icons md-48"} onClick={this.initAudio.bind(this, 'prev')}>
+                        arrow_back_ios
+                    </span>
                 </div>
             )
         } else {
