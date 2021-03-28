@@ -7,8 +7,7 @@ import Boy from './components/Boy';
 import {
     CircularInput,
     CircularTrack,
-    CircularProgress,
-    CircularThumb
+    CircularProgress
 } from 'react-circular-input'
 import track1 from "./audio/1.mp3";
 import track2 from "./audio/2.mp3";
@@ -29,7 +28,7 @@ class App extends React.Component {
             play: false,
             audioObject: null,
             currentTrack: 0,
-            volume: 0.1,
+            volume: 0.02,
             playTime: 0
         };
         this.audio = new Audio();
@@ -95,7 +94,7 @@ class App extends React.Component {
                 --nextTrack;
             }
         }
-
+        this.audio.removeEventListener("ended", this.initAudio.bind(this, 'next'));
         this.setState({currentTrack: nextTrack});
         this.audio.src = this.albumArray[nextTrack];
         this.audio.crossOrigin = "anonymous";
@@ -104,12 +103,19 @@ class App extends React.Component {
         this.setVolume();
         this.startProgressInteraval();
         this.audio.play();
-        this.audio.removeEventListener("ended", this.initAudio.bind(this, 'next'));
         this.audio.addEventListener("ended", this.initAudio.bind(this, 'next'));
     }
 
     setTrackPosition(value) {
-        console.log(value);
+        let time = 0;
+        console.log(typeof(value) === 'number' , value);
+        if (typeof(value) === 'number') {
+            time = this.audio.duration * value;
+        } else {
+            time = this.audio.duration * (value.slice(4, 9));
+        }
+        //this.audio.currentTime = time;
+
     }
 
     render() {
