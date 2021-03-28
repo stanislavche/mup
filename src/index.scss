@@ -29,9 +29,9 @@ html, body {
   position: fixed;
   margin: 0 auto;
   color: #86c06c;
+  top: calc(50% + 100px);
   left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
   &:hover{
     text-decoration: underline;
 
