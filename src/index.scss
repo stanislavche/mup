@@ -89,7 +89,7 @@ html, body {
   position: fixed;
   margin: 0 auto;
   color: #86c06c;
-  top: calc(50% + 106px);
+  top: calc(50% + 97px);
   left: 50%;
   transform: translateX(-50%);
   &:hover{
@@ -97,6 +97,7 @@ html, body {
   }
 }
 
+.progressSwitcher,
 .volumeSwitcher{
   position: fixed;
   top: 50%;
