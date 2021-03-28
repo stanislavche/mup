@@ -1,22 +1,32 @@
 {
   "files": {
-    "main.css": "/mup/static/css/main.f028f435.chunk.css",
-    "main.js": "/mup/static/js/main.f52360d8.chunk.js",
-    "main.js.map": "/mup/static/js/main.f52360d8.chunk.js.map",
-    "runtime-main.js": "/mup/static/js/runtime-main.a9809641.js",
-    "runtime-main.js.map": "/mup/static/js/runtime-main.a9809641.js.map",
-    "static/js/2.493aef4e.chunk.js": "/mup/static/js/2.493aef4e.chunk.js",
-    "static/js/2.493aef4e.chunk.js.map": "/mup/static/js/2.493aef4e.chunk.js.map",
+    "main.css": "/mup/static/css/main.38ce1eaa.chunk.css",
+    "main.js": "/mup/static/js/main.704538d7.chunk.js",
+    "main.js.map": "/mup/static/js/main.704538d7.chunk.js.map",
+    "runtime-main.js": "/mup/static/js/runtime-main.827d3b5d.js",
+    "runtime-main.js.map": "/mup/static/js/runtime-main.827d3b5d.js.map",
+    "static/js/2.92a488e4.chunk.js": "/mup/static/js/2.92a488e4.chunk.js",
+    "static/js/2.92a488e4.chunk.js.map": "/mup/static/js/2.92a488e4.chunk.js.map",
     "index.html": "/mup/index.html",
-    "static/css/main.f028f435.chunk.css.map": "/mup/static/css/main.f028f435.chunk.css.map",
-    "static/js/2.493aef4e.chunk.js.LICENSE.txt": "/mup/static/js/2.493aef4e.chunk.js.LICENSE.txt",
-    "static/media/boy.09e91660.svg": "/mup/static/media/boy.09e91660.svg",
-    "static/media/promise.06f37e67.mp3": "/mup/static/media/promise.06f37e67.mp3"
+    "static/css/main.38ce1eaa.chunk.css.map": "/mup/static/css/main.38ce1eaa.chunk.css.map",
+    "static/js/2.92a488e4.chunk.js.LICENSE.txt": "/mup/static/js/2.92a488e4.chunk.js.LICENSE.txt",
+    "static/media/1.552b61c6.mp3": "/mup/static/media/1.552b61c6.mp3",
+    "static/media/10.f5ddc0c9.mp3": "/mup/static/media/10.f5ddc0c9.mp3",
+    "static/media/2.c69434d0.mp3": "/mup/static/media/2.c69434d0.mp3",
+    "static/media/3.06f37e67.mp3": "/mup/static/media/3.06f37e67.mp3",
+    "static/media/4.da4ee228.mp3": "/mup/static/media/4.da4ee228.mp3",
+    "static/media/5.bcaf96c5.mp3": "/mup/static/media/5.bcaf96c5.mp3",
+    "static/media/6.e9392241.mp3": "/mup/static/media/6.e9392241.mp3",
+    "static/media/7.669dcbf8.mp3": "/mup/static/media/7.669dcbf8.mp3",
+    "static/media/8.56748b33.mp3": "/mup/static/media/8.56748b33.mp3",
+    "static/media/9.54d847f6.mp3": "/mup/static/media/9.54d847f6.mp3",
+    "static/media/index.scss": "/mup/static/media/MaterialIconsTwoTone-Regular.ecd911a2.otf",
+    "static/media/boy.09e91660.svg": "/mup/static/media/boy.09e91660.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.a9809641.js",
-    "static/js/2.493aef4e.chunk.js",
-    "static/css/main.f028f435.chunk.css",
-    "static/js/main.f52360d8.chunk.js"
+    "static/js/runtime-main.827d3b5d.js",
+    "static/js/2.92a488e4.chunk.js",
+    "static/css/main.38ce1eaa.chunk.css",
+    "static/js/main.704538d7.chunk.js"
   ]
 }
