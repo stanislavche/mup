@@ -1,16 +1,16 @@
 @import "scss-variables";
 @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
-@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
-@font-face {
-  font-family: 'Material Icons';
-  font-style: normal;
-  font-weight: 400;
-  src: url(https://example.com/MaterialIcons-Regular.eot); /* For IE6-8 */
-  src: local('Material Icons'),
-  local('MaterialIcons-Regular'),
-  url(https://example.com/MaterialIcons-Regular.woff2) format('woff2'),
-  url(https://example.com/MaterialIcons-Regular.woff) format('woff'),
-  url(https://example.com/MaterialIcons-Regular.ttf) format('truetype');
+$material-icons-font-path: '~material-icons/iconfont/';
+@import '~material-icons/iconfont/material-icons.scss';
+
+$material-icons-codepoints: () !default; /* Sass map of icon names and codepoints */
+$material-icons-font-path: '' !default;
+$material-icons-font-name: 'MaterialIcons-Regular' !default;
+$material-icons-font-size: 24px !default;
+$material-icons-font-family: 'Material Icons' !default;
+
+.material-icons {
+  @include material-icons();
 }
 
 body {
@@ -42,7 +42,7 @@ html, body {
   vertical-align: middle;
   transform: translateX(-50%);
   &.prev {
-    left: calc(50% - 120px);
+    left: calc(50% - 112px);
   }
   &.next {
     left: calc(50% + 120px);
@@ -94,6 +94,12 @@ html, body {
   transform: translateX(-50%);
   &:hover{
     text-decoration: underline;
-
   }
+}
+
+.volumeSwitcher{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

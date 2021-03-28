@@ -4,6 +4,12 @@ import './scss-variables.scss';
 import Space from './components/Space';
 import Visualiser from "./components/Visualiser";
 import Boy from './components/Boy';
+import {
+    CircularInput,
+    CircularTrack,
+    CircularProgress,
+    CircularThumb
+} from 'react-circular-input'
 import track1 from "./audio/1.mp3";
 import track2 from "./audio/2.mp3";
 import track3 from "./audio/3.mp3";
@@ -22,10 +28,12 @@ class App extends React.Component {
         this.state = {
             play: false,
             audioObject: null,
-            currentTrack: 0
+            currentTrack: 0,
+            volume: 0.1
         };
         this.audio = new Audio();
         this.handleButtonClick = this.handleButtonClick.bind(this);
+        this.setVolume = this.setVolume.bind(this);
         this.albumArray = [track1,track2,track3,track4,track5,track6,track7,track8,track9,track10];
     }
 
@@ -41,6 +49,17 @@ class App extends React.Component {
             }
         }
         this.setState({play: true});
+    }
+
+    setVolume(volume) {
+        console.log(volume);
+        if(volume) {
+            this.setState({volume:volume});
+            this.audio.volume = volume;
+        } else {
+            this.audio.volume = this.state.volume;
+        }
+
     }
 
     initAudio(type) {
@@ -66,6 +85,7 @@ class App extends React.Component {
         this.audio.crossOrigin = "anonymous";
         this.audio.load();
         this.setState({audioObject: this.audio});
+        this.setVolume();
         this.audio.play();
     }
 
@@ -87,6 +107,10 @@ class App extends React.Component {
                     <Space />
                     <Visualiser startAnimation={this.state.play} audio={this.state.audioObject}/>
                     <Boy imageType='boy' startAnimation={this.state.play} />
+                    <CircularInput className={'volumeSwitcher'} value={this.state.volume} onChange={this.setVolume} radius={150}>
+                        <CircularTrack strokeWidth={4} stroke="#86c06c"/>
+                        <CircularProgress strokeWidth={10} stroke="#dff8d0"/>
+                    </CircularInput>
                     {renderButton()}
                     <span className={"switcher next material-icons md-48"} onClick={this.initAudio.bind(this, 'next')}>
                         arrow_forward_ios
