@@ -119,7 +119,6 @@ class Space  extends React.Component {
     }
 
     componentDidMount(prevProps) {
-        console.log('draw');
         this.drawImage();
     }
 }

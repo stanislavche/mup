@@ -19,6 +19,7 @@ import track7 from "./audio/7.mp3";
 import track8 from "./audio/8.mp3";
 import track9 from "./audio/9.mp3";
 import track10 from "./audio/10.mp3";
+import InputRange from "react-input-range";
 
 
 class App extends React.Component {
@@ -28,15 +29,16 @@ class App extends React.Component {
             play: false,
             audioObject: null,
             currentTrack: 0,
-            volume: 0.02,
-            playTime: 0
+            volume: 100,
         };
+        this.playTime = 0;
         this.audio = new Audio();
         this.handleButtonClick = this.handleButtonClick.bind(this);
         this.setVolume = this.setVolume.bind(this);
         this.setTrackPosition = this.setTrackPosition.bind(this);
         this.albumArray = [track1,track2,track3,track4,track5,track6,track7,track8,track9,track10];
         this.progressTimer = null;
+        this.debounceTimer = null;
     }
 
 
@@ -57,18 +59,23 @@ class App extends React.Component {
 
     setVolume(volume) {
         if(volume) {
-            this.setState({volume:volume});
-            this.audio.volume = volume;
+            this.setState({volume: volume});
+            this.audio.volume = volume/100;
         } else {
-            this.audio.volume = this.state.volume;
+            this.audio.volume = this.state.volume/100;
         }
+    }
+
+    setProgressTime() {
+        this.playTime = +((100 / (this.audio.duration / this.audio.currentTime))/100).toFixed(3);
+        this.setState({playTime: this.playTime});
     }
 
     startProgressInteraval() {
         this.clearProgressInterval();
         this.progressTimer = setInterval(() => {
-            this.setState({playTime: ((100 / (this.audio.duration / this.audio.currentTime))/100).toFixed(2)});
-        }, 2000);
+            this.setProgressTime();
+        }, 500);
     }
 
     clearProgressInterval() {
@@ -107,15 +114,17 @@ class App extends React.Component {
     }
 
     setTrackPosition(value) {
-        let time = 0;
-        console.log(typeof(value) === 'number' , value);
-        if (typeof(value) === 'number') {
-            time = this.audio.duration * value;
-        } else {
-            time = this.audio.duration * (value.slice(4, 9));
-        }
-        //this.audio.currentTime = time;
-
+        clearTimeout(this.debounceTimer);
+        this.debounceTimer = setTimeout(() => {
+            this.setProgressTime();
+            let time = 0;
+            if (typeof(value) === 'number') {
+                time = this.audio.duration * value;
+            } else {
+                time = this.audio.duration * (value.slice(4, 9));
+            }
+            this.audio.currentTime = time;
+        }, 200);
     }
 
     render() {
@@ -128,6 +137,14 @@ class App extends React.Component {
             return(<p className="startButton" onClick={this.handleButtonClick}>PLAY</p>);
         };
 
+        const volumeEl = () => {
+            return(
+                <CircularInput className={'volumeSwitcher'} value={this.state.volume/100} onChange={this.setVolume} radius={150}>
+                    <CircularTrack strokeWidth={4} stroke="#86c06c"/>
+                    <CircularProgress strokeWidth={10} stroke="#dff8d0"/>
+                </CircularInput>
+            )};
+
         if (this.state.play) {
             return (
                 <div className="App" >
@@ -135,15 +152,22 @@ class App extends React.Component {
                     <Visualiser startAnimation={this.state.play} audio={this.state.audioObject}/>
                     <Boy imageType='boy' startAnimation={this.state.play} />
 
-                    <CircularInput className={'progressSwitcher'} value={this.state.playTime} onChange={this.setTrackPosition} radius={166}>
+                    <CircularInput className={'progressSwitcher'} value={this.playTime} onChange={this.setTrackPosition} radius={166}>
                         <CircularTrack strokeWidth={4} stroke="#86c06c"/>
                         <CircularProgress strokeWidth={10} stroke="#dff8d0"/>
                     </CircularInput>
-
-                    <CircularInput className={'volumeSwitcher'} value={this.state.volume} onChange={this.setVolume} radius={150}>
-                        <CircularTrack strokeWidth={4} stroke="#86c06c"/>
-                        <CircularProgress strokeWidth={10} stroke="#dff8d0"/>
-                    </CircularInput>
+                    <InputRange
+                        classNames={{
+                            activeTrack: 'input-range__track input-range__track--active',
+                            inputRange: 'input-range volumeSwitcher',
+                            slider: 'input-range__slider',
+                            sliderContainer: 'input-range__slider-container',
+                            track: 'input-range__track input-range__track--background'
+                        }}
+                        maxValue={100}
+                        minValue={0}
+                        value={this.state.volume}
+                        onChange={this.setVolume} />
                     {renderButton()}
                     <span className={"switcher next material-icons md-48"} onClick={this.initAudio.bind(this, 'next')}>
                         arrow_forward_ios
@@ -151,6 +175,7 @@ class App extends React.Component {
                     <span className={"switcher prev material-icons md-48"} onClick={this.initAudio.bind(this, 'prev')}>
                         arrow_back_ios
                     </span>
+
                 </div>
             )
         } else {
