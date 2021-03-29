@@ -67,6 +67,7 @@ html, body {
   white-space: nowrap;
   direction: ltr;
   color: #86c06c;
+  user-select: none;
   /* Support for all WebKit browsers. */
   -webkit-font-smoothing: antialiased;
   /* Support for Safari and Chrome. */
