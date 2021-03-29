@@ -23,7 +23,7 @@ class Visualiser extends React.Component {
     initAudio() {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         this.analyser = audioContext.createAnalyser();
-        this.analyser.fftSize = 512;
+        this.analyser.fftSize = 256;
         const source = audioContext.createMediaElementSource(this.props.audio);
         source.connect(this.analyser);
         this.analyser.connect(audioContext.destination);
@@ -47,21 +47,28 @@ class Visualiser extends React.Component {
         if (this.canvasRef.current) {
             this.analyser.getByteFrequencyData(this.frequencyArray);
             let bass = Math.floor(this.frequencyArray[1]); //1Hz Frequenz
-            let radius = 0.45 * this.canvas.width <= 450 ? -(bass * 0.25 + 0.45 * this.canvas.width) : -(bass * 0.25 + 100);
+            let radius = 0.45 * this.canvas.width <= 450 ? -(bass * 0.25 + 0.45 * this.canvas.width) : -(bass * 0.25 + 120);
             for (let i = 0; i < this.frequencyArray.length; i++) {
-                const position = this.frequencyArray[i];
+                let position = this.frequencyArray[i];
                 if (i > 0) {
+                    // if (i < 50 && position > 100) {
+                    //     position = position - (100 - i*2);
+                    // }
                     this.ctx.fillStyle = '#86c06c';
-                    this.ctx.fillRect(0, radius, 2, -position/2);
-                    this.ctx.rotate((180 / 256) * Math.PI / 180);
+                    this.ctx.fillRect(0, radius, 6, -position/3);
+                    this.ctx.rotate((360 / 128) * Math.PI / 180);
+                    // this.ctx.fillStyle = '#316851';
+                    // this.ctx.fillRect(0, radius, 4, -position/2);
+                    // this.ctx.rotate((180 / 128) * Math.PI / 180);
                 }
             }
             for (let i = 0; i < this.frequencyArray.length; i++) {
                 const position = this.frequencyArray[i];
                 if (i > 0) {
-                    this.ctx.fillStyle = '#316851';
-                    this.ctx.fillRect(0, radius, 2, -position/2);
-                    this.ctx.rotate((180 / 256) * Math.PI / 180);
+                    this.ctx.fillStyle = '#86c06c';
+                    //this.ctx.fillStyle = '#316851';
+                    this.ctx.fillRect(0, radius, 6, -position/3);
+                    this.ctx.rotate(-(360 / 128) * Math.PI / 180);
                 }
             }
             this.ctx.restore();
@@ -73,7 +80,7 @@ class Visualiser extends React.Component {
             if (this.canvasRef.current) {
                 this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
                 this.ctx.save();
-                //ctx.globalCompositeOperation = 'color-dodge';
+                this.ctx.globalCompositeOperation = 'color-dodge';
                 this.ctx.translate(window.innerWidth / 2, window.innerHeight / 2);
 
                 this.drawCanvas();
