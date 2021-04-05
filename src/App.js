@@ -9,6 +9,7 @@ import {
     CircularTrack,
     CircularProgress
 } from 'react-circular-input'
+
 import track1 from "./audio/1.mp3";
 import track2 from "./audio/2.mp3";
 import track3 from "./audio/3.mp3";
@@ -19,6 +20,17 @@ import track7 from "./audio/7.mp3";
 import track8 from "./audio/8.mp3";
 import track9 from "./audio/9.mp3";
 import track10 from "./audio/10.mp3";
+import img1 from "./image/serenity.gif";
+import img2 from "./image/rocket.gif";
+import img3 from "./image/promise.gif";
+import img4 from "./image/spacetime.gif";
+import img5 from "./image/popcorn.gif";
+import img6 from "./image/siting.gif";
+import img7 from "./image/dream.gif";
+import img8 from "./image/rail.gif";
+import img9 from "./image/mup-transparent.gif";
+import boy from './image/boy.svg';
+
 import InputRange from "react-input-range";
 
 
@@ -29,14 +41,68 @@ class App extends React.Component {
             play: false,
             audioObject: null,
             currentTrack: 0,
-            volume: 100,
+            volume: 70
         };
         this.playTime = 0;
         this.audio = new Audio();
         this.handleButtonClick = this.handleButtonClick.bind(this);
         this.setVolume = this.setVolume.bind(this);
         this.setTrackPosition = this.setTrackPosition.bind(this);
-        this.albumArray = [track1,track2,track3,track4,track5,track6,track7,track8,track9,track10];
+
+        this.albumArray = [{
+            audio: track1,
+            img: img1,
+            title: 'SERENITY',
+            className: ''
+        },{
+            audio: track2,
+            img: img6,
+            title: 'HOLY ROCKET',
+            className: ''
+        },{
+            audio: track3,
+            img: boy,
+            title: 'PROMISE',
+            className: 'boy'
+        },{
+            audio: track4,
+            img: img4,
+            title: 'SPACE TIME',
+            className: ''
+        },{
+            audio: track5,
+            img: img5,
+            title: 'POPCORN',
+            className: ''
+        },{
+            audio: track6,
+            img: img6,
+            title: 'GOAL ACHIEVEMENT',
+            className: ''
+        },{
+            audio: track7,
+            img: img7,
+            title: 'CRYOGENIC DREAM',
+            className: ''
+        },{
+            audio: track8,
+            img: img3,
+            title: 'STARWAY',
+            className: ''
+        },{
+            audio: track9,
+            img: boy,
+            title: 'IMPETUS',
+            className: 'boy'
+        },{
+            audio: track10,
+            img: img8,
+            title: 'RAILROAD SWITCH',
+            className: ''
+        }];
+        this.image = this.albumArray[0].img;
+        this.title = this.albumArray[0].title;
+        this.imgClass = this.albumArray[0].className;
         this.progressTimer = null;
         this.debounceTimer = null;
     }
@@ -103,7 +169,10 @@ class App extends React.Component {
         }
         this.audio.removeEventListener("ended", this.initAudio.bind(this, 'next'));
         this.setState({currentTrack: nextTrack});
-        this.audio.src = this.albumArray[nextTrack];
+        this.audio.src = this.albumArray[nextTrack].audio;
+        this.image = this.albumArray[nextTrack].img;
+        this.title = this.albumArray[nextTrack].title;
+        this.imgClass = this.albumArray[nextTrack].className;
         this.audio.crossOrigin = "anonymous";
         this.audio.load();
         this.setState({audioObject: this.audio});
@@ -139,10 +208,13 @@ class App extends React.Component {
 
         const volumeEl = () => {
             return(
-                <CircularInput className={'volumeSwitcher'} value={this.state.volume/100} onChange={this.setVolume} radius={150}>
-                    <CircularTrack strokeWidth={4} stroke="#86c06c"/>
-                    <CircularProgress strokeWidth={10} stroke="#dff8d0"/>
-                </CircularInput>
+                <>
+                    <CircularInput className={'volumeSwitcher'} value={this.state.volume/100} onChange={this.setVolume} radius={150}>
+                        <CircularTrack strokeWidth={4} stroke="#86c06c"/>
+                        <CircularProgress strokeWidth={10} stroke="#dff8d0"/>
+                    </CircularInput>
+                    <Boy imageType='boy' startAnimation={this.state.play} />
+               </>
             )};
 
         if (this.state.play) {
@@ -150,8 +222,7 @@ class App extends React.Component {
                 <div className="App" >
                     <Space />
                     <Visualiser startAnimation={this.state.play} audio={this.state.audioObject}/>
-                    <Boy imageType='boy' startAnimation={this.state.play} />
-
+                    <img className={"trackImage " + this.imgClass} src={this.image} alt={"logo"} />
                     <CircularInput className={'progressSwitcher'} value={this.playTime} onChange={this.setTrackPosition} radius={166}>
                         <CircularTrack strokeWidth={4} stroke="#86c06c"/>
                         <CircularProgress strokeWidth={10} stroke="#dff8d0"/>
@@ -182,7 +253,9 @@ class App extends React.Component {
            return (
                <div className="App" >
                    <Space />
+                   <img className={"mainLogo"} src={img9} alt={"logo"} />
                    {renderButton()}
+                   <span className={"material-icons hidden-text"}>arrow_forward_ios</span>
                </div>
            );
         }

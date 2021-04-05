@@ -149,3 +149,33 @@ html, body {
     display: none;
   }
 }
+.mainLogo{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  max-width: 60vw;
+  vertical-align: middle;
+  transform: translate(-50%, -50%);
+  display: block;
+}
+.hidden-text{
+  position: fixed;
+  top:0;
+  left: 0;
+  opacity: 0;
+}
+.trackImage {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 338px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+  display: block;
+  &.boy {
+    left: calc(50% + 4px);
+    width: 200px;
+    border-radius: 0;
+  }
+}
