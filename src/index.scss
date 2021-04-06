@@ -1,6 +1,6 @@
 @import "scss-variables";
 @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
-@import "~react-input-range/lib/css/index.css";
+@import "~react-input-range-ios-fix/lib/css/index.css";
 $material-icons-font-path: '~material-icons/iconfont/';
 @import '~material-icons/iconfont/material-icons.scss';
 
@@ -102,7 +102,7 @@ html, body {
   top: calc(50% + 108px);
   left: 50%;
   transform: translateX(-50%);
-  transition: all 0.2s;
+  transition: color 0.2s, opacity 0.2s;
   opacity: 0.4;
   &:hover{
     opacity: 1;
@@ -145,16 +145,7 @@ html, body {
   background: #86c06c;
 }
 
-.volumeSwitcher{
-  width: 120px;
-  position: fixed;
-  top: calc(50% - 130px);
-  left: 50%;
-  transform: translate(-50%, -50%);
-  & > span {
-    display: none;
-  }
-}
+
 .mainLogo{
   position: fixed;
   top: 50%;
@@ -186,33 +177,62 @@ html, body {
   }
 }
 
-.switcherHeader{
+
+.menuIcon{
   position: fixed;
-  top: calc(50% - 100px);
+  top: calc(50% - 130px);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  padding: 6px;
+}
+
+.settings{
+  position: fixed;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   display: block;
-  cursor: pointer;
-  text-shadow: 3px 0px 2px #071820 ;
-  color: #dff8d0;
-  opacity: 0.4;
-  transition: all 0.2s;
-  &.active {
-    color: #86c06c;
-    .audioSwitcher {
-      color: #86c06c;
-    }
-  }
-  &:hover{
-    opacity: 1;
+  width: 234px;
+  height: 240px;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding-top: 20px;
+  &__title {
+    color: #dff8d0;
   }
 }
+
+.volumeSwitcher{
+  width: 160px;
+  position: relative;
+  margin: 0 auto;
+  & > span {
+    display: none;
+  }
+}
+.switcherHeader{
+  position: relative;
+  margin: 0 auto 4px;
+  display: block;
+  cursor: pointer;
+  text-shadow: 3px 0px 2px #071820 ;
+  color: #86c06c;
+  transition: color 0.2s;
+  &.active {
+    color: #dff8d0;
+    .audioSwitcher {
+      color: #dff8d0;
+    }
+  }
+}
+
 .audioSwitcher{
-  color: #dff8d0;
+  color: #86c06c;
   display: inline-block;
   margin: 0 3px;
   padding: 0;
   line-height: 24px;
   vertical-align: middle;
-  transition: all 0.2s;
+  transition: color 0.2s;
 }

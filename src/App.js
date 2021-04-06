@@ -41,7 +41,7 @@ import img8 from "./image/rail.gif";
 import img9 from "./image/mup-transparent.gif";
 import boy from './image/boy.svg';
 
-import InputRange from "react-input-range";
+import InputRange from "react-input-range-ios-fix";
 
 
 class App extends React.Component {
@@ -127,11 +127,16 @@ class App extends React.Component {
         this.debounceTimer = null;
         this.audioType = 'org';
         this.currentTime = 0;
+        this.settingsVisibility = false;
         this.onLoadMedia = this.onLoadMedia.bind(this);
         this.playNext = this.playNext.bind(this);
         this.setAudioType = this.setAudioType.bind(this);
+        this.showSettings = this.showSettings.bind(this);
     }
 
+    showSettings() {
+        this.settingsVisibility = !this.settingsVisibility;
+    }
 
     handleButtonClick() {
         if (!this.audio.paused) {
@@ -263,30 +268,64 @@ class App extends React.Component {
                 );
             }
             return(<span className="audioSwitcher material-icons md-48">toggle_on</span>);
+        };
+
+        const renderImage = () => {
+            if (!this.settingsVisibility) {
+                return (<img className={"trackImage " + this.imgClass} src={this.image} alt={"logo"} />);
+            }
+            return false;
+        };
+
+        const renderSettings = () => {
+            if (this.settingsVisibility) {
+                return (
+                    <div className={"settings"}>
+                        <span className={"settings__title"}>post processing</span>
+                        <span className={this.audioType === 'post' ? 'switcherHeader active' : 'switcherHeader'} onClick={this.setAudioType}>
+                            OFF {renderAudioTypeButton()} ON.
+                        </span>
+                        <span className={"settings__title"}>volume</span>
+                        <InputRange
+                            classNames={{
+                                activeTrack: 'input-range__track input-range__track--active',
+                                inputRange: 'input-range volumeSwitcher',
+                                slider: 'input-range__slider',
+                                sliderContainer: 'input-range__slider-container',
+                                track: 'input-range__track input-range__track--background'
+                            }}
+                            maxValue={100}
+                            minValue={0}
+                            value={this.state.volume}
+                            onChange={this.setVolume} />
+
+                    </div>
+                );
+            }
+            return false;
+        };
+
+        const renderSettingsIcon = () => {
+            if (this.settingsVisibility) {
+                return (<span className={"menuIcon material-icons md-36"} onClick={this.showSettings} >close</span>);
+            }
+            return (<span className={"menuIcon material-icons md-36"} onClick={this.showSettings}>settings</span>);
+        }
+
+        const renderVisualizer = () => {
+            return(<Visualiser startAnimation={this.state.play} audio={this.state.audioObject}/>);
         }
 
         if (this.state.play) {
             return (
                 <div className="App" >
                     <Space />
-                    <Visualiser startAnimation={this.state.play} audio={this.state.audioObject}/>
-                    <img className={"trackImage " + this.imgClass} src={this.image} alt={"logo"} />
+                    {renderVisualizer()}
+                    {renderImage()}
                     <CircularInput className={'progressSwitcher'} value={this.playTime ? this.playTime : 0} onChange={this.setTrackPosition} radius={166}>
                         <CircularTrack strokeWidth={4} stroke="#86c06c"/>
                         <CircularProgress strokeWidth={10} stroke="#dff8d0"/>
                     </CircularInput>
-                    <InputRange
-                        classNames={{
-                            activeTrack: 'input-range__track input-range__track--active',
-                            inputRange: 'input-range volumeSwitcher',
-                            slider: 'input-range__slider',
-                            sliderContainer: 'input-range__slider-container',
-                            track: 'input-range__track input-range__track--background'
-                        }}
-                        maxValue={100}
-                        minValue={0}
-                        value={this.state.volume}
-                        onChange={this.setVolume} />
                     {renderButton()}
                     <span className={"switcher next material-icons md-48"} onClick={this.initAudio.bind(this, 'next')}>
                         arrow_forward_ios
@@ -294,10 +333,8 @@ class App extends React.Component {
                     <span className={"switcher prev material-icons md-48"} onClick={this.initAudio.bind(this, 'prev')}>
                         arrow_back_ios
                     </span>
-                    <span className={this.audioType === 'post' ? 'switcherHeader active' : 'switcherHeader'} onClick={this.setAudioType}>
-                        ORG {renderAudioTypeButton()} POST
-                    </span>
-
+                    {renderSettingsIcon()}
+                    {renderSettings()}
                 </div>
             )
         } else {
