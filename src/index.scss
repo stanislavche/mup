@@ -33,27 +33,6 @@ html, body {
   top: 0;
   left: 0;
 }
-.switcher{
-  font-size: 30px;
-  z-index: 1000;
-  cursor: pointer;
-  color: #86c06c;
-  position: fixed;
-  top: calc(50% - 24px);
-  vertical-align: middle;
-  transform: translateX(-50%);
-  transition: color 0.2s;
-  &.prev {
-    left: calc(50% - 112px);
-  }
-  &.next {
-    left: calc(50% + 120px);
-  }
-  &:hover{
-    color: #dff8d0;
-  }
-}
-
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;
@@ -84,23 +63,50 @@ html, body {
   &.md-36 { font-size: 36px; }
   &.md-48 { font-size: 48px; }
 }
+.switcher{
+  font-size: 30px;
+  z-index: 1000;
+  cursor: pointer;
+  color: #dff8d0;
+  position: fixed;
+  top: calc(50% - 24px);
+  vertical-align: middle;
+  transform: translateX(-50%);
+  text-shadow: 3px 0px 2px #071820 ;
+  transition: all 0.2s;
+  opacity: 0.4;
+  &.prev {
+    left: calc(50% - 112px);
+  }
+  &.next {
+    left: calc(50% + 120px);
+  }
+  &:hover{
+    opacity: 1;
+    color: #86c06c;
+
+  }
+}
+
+
 
 .startButton{
   font-size: 30px;
   z-index: 1000;
   cursor: pointer;
   padding: 0;
-  margin: 0;
-  text-shadow: 5px 5px 5px #316851 ;
+  text-shadow: 2px 2px 2px #071820 ;
   position: fixed;
   margin: 0 auto;
-  color: #86c06c;
-  top: calc(50% + 97px);
+  color: #dff8d0;
+  top: calc(50% + 108px);
   left: 50%;
   transform: translateX(-50%);
-  transition: color 0.2s;
+  transition: all 0.2s;
+  opacity: 0.4;
   &:hover{
-    color: #dff8d0;
+    opacity: 1;
+    color: #86c06c;
   }
 }
 
@@ -142,7 +148,7 @@ html, body {
 .volumeSwitcher{
   width: 120px;
   position: fixed;
-  top: calc(50% + 140px);
+  top: calc(50% - 130px);
   left: 50%;
   transform: translate(-50%, -50%);
   & > span {
@@ -178,4 +184,35 @@ html, body {
     width: 200px;
     border-radius: 0;
   }
+}
+
+.switcherHeader{
+  position: fixed;
+  top: calc(50% - 100px);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: block;
+  cursor: pointer;
+  text-shadow: 3px 0px 2px #071820 ;
+  color: #dff8d0;
+  opacity: 0.4;
+  transition: all 0.2s;
+  &.active {
+    color: #86c06c;
+    .audioSwitcher {
+      color: #86c06c;
+    }
+  }
+  &:hover{
+    opacity: 1;
+  }
+}
+.audioSwitcher{
+  color: #dff8d0;
+  display: inline-block;
+  margin: 0 3px;
+  padding: 0;
+  line-height: 24px;
+  vertical-align: middle;
+  transition: all 0.2s;
 }

@@ -126,8 +126,10 @@ class App extends React.Component {
         this.progressTimer = null;
         this.debounceTimer = null;
         this.audioType = 'org';
+        this.currentTime = 0;
         this.onLoadMedia = this.onLoadMedia.bind(this);
         this.playNext = this.playNext.bind(this);
+        this.setAudioType = this.setAudioType.bind(this);
     }
 
 
@@ -178,7 +180,6 @@ class App extends React.Component {
     }
 
     initAudio(type) {
-        console.log(type);
         const curTrack = this.state.currentTrack;
         let nextTrack = this.state.currentTrack;
         if(type && type === 'next') {
@@ -195,9 +196,10 @@ class App extends React.Component {
                 --nextTrack;
             }
         }
-        console.log('hello');
+        if (type === "typeChange") {
+            this.currentTime = this.audio.currentTime;
+        }
         this.audio.removeEventListener("ended", this.playNext);
-
         this.setState({currentTrack: nextTrack});
         this.audio.src = this.albumArray[nextTrack][this.audioType];
         this.image = this.albumArray[nextTrack].img;
@@ -214,6 +216,8 @@ class App extends React.Component {
         this.audio.removeEventListener("loadeddata", this.onLoadMedia);
         this.setVolume();
         this.startProgressInteraval();
+        this.audio.currentTime = this.currentTime;
+        this.currentTime = 0;
         this.audio.play();
         this.audio.addEventListener("ended", this.playNext);
     }
@@ -232,26 +236,34 @@ class App extends React.Component {
         }, 200);
     }
 
+    setAudioType() {
+        if(this.audioType === 'org') {
+            this.audioType = 'post';
+        } else {
+            this.audioType = 'org';
+        }
+        this.audio.pause();
+        this.initAudio('typeChange');
+    }
+
     render() {
         const renderButton = () => {
             if (this.audio && !this.audio.paused) {
                 return (
-                    <p className="startButton" onClick={this.handleButtonClick}>PAUSE</p>
+                    <span className="startButton material-icons md-48" onClick={this.handleButtonClick}>pause_circle_filled</span>
                 );
             }
-            return(<p className="startButton" onClick={this.handleButtonClick}>PLAY</p>);
+            return(<span className="startButton material-icons md-48" onClick={this.handleButtonClick}>play_circle_filled</span>);
         };
 
-        const volumeEl = () => {
-            return(
-                <>
-                    <CircularInput className={'volumeSwitcher'} value={this.state.volume/100} onChange={this.setVolume} radius={150}>
-                        <CircularTrack strokeWidth={4} stroke="#86c06c"/>
-                        <CircularProgress strokeWidth={10} stroke="#dff8d0"/>
-                    </CircularInput>
-                    <Boy imageType='boy' startAnimation={this.state.play} />
-               </>
-            )};
+        const renderAudioTypeButton = () => {
+            if (this.audioType === 'org') {
+                return (
+                    <span className="audioSwitcher material-icons md-48">toggle_off</span>
+                );
+            }
+            return(<span className="audioSwitcher material-icons md-48">toggle_on</span>);
+        }
 
         if (this.state.play) {
             return (
@@ -281,6 +293,9 @@ class App extends React.Component {
                     </span>
                     <span className={"switcher prev material-icons md-48"} onClick={this.initAudio.bind(this, 'prev')}>
                         arrow_back_ios
+                    </span>
+                    <span className={this.audioType === 'post' ? 'switcherHeader active' : 'switcherHeader'} onClick={this.setAudioType}>
+                        ORG {renderAudioTypeButton()} POST
                     </span>
 
                 </div>
