@@ -20,6 +20,16 @@ import track7 from "./audio/7.mp3";
 import track8 from "./audio/8.mp3";
 import track9 from "./audio/9.mp3";
 import track10 from "./audio/10.mp3";
+import track1Raw from "./audio/1 raw.mp3";
+import track2Raw from "./audio/2 raw.mp3";
+import track3Raw from "./audio/3 raw.mp3";
+import track4Raw from "./audio/4 raw.mp3";
+import track5Raw from "./audio/5 raw.mp3";
+import track6Raw from "./audio/6 raw.mp3";
+import track7Raw from "./audio/7 raw.mp3";
+import track8Raw from "./audio/8 raw.mp3";
+import track9Raw from "./audio/9 raw.mp3";
+import track10Raw from "./audio/10 raw.mp3";
 import img1 from "./image/serenity.gif";
 import img2 from "./image/rocket.gif";
 import img3 from "./image/promise.gif";
@@ -50,52 +60,62 @@ class App extends React.Component {
         this.setTrackPosition = this.setTrackPosition.bind(this);
 
         this.albumArray = [{
-            audio: track1,
+            post: track1,
+            org: track1Raw,
             img: img1,
             title: 'SERENITY',
             className: ''
         },{
-            audio: track2,
+            post: track2,
+            org: track2Raw,
             img: img6,
             title: 'HOLY ROCKET',
             className: ''
         },{
-            audio: track3,
+            post: track3,
+            org: track3Raw,
             img: boy,
             title: 'PROMISE',
             className: 'boy'
         },{
-            audio: track4,
+            post: track4,
+            org: track4Raw,
             img: img4,
             title: 'SPACE TIME',
             className: ''
         },{
-            audio: track5,
+            post: track5,
+            org: track5Raw,
             img: img5,
             title: 'POPCORN',
             className: ''
         },{
-            audio: track6,
+            post: track6,
+            org: track6Raw,
             img: img6,
             title: 'GOAL ACHIEVEMENT',
             className: ''
         },{
-            audio: track7,
+            post: track7,
+            org: track7Raw,
             img: img7,
             title: 'CRYOGENIC DREAM',
             className: ''
         },{
-            audio: track8,
+            post: track8,
+            org: track8Raw,
             img: img3,
             title: 'STARWAY',
             className: ''
         },{
-            audio: track9,
+            post: track9,
+            org: track9Raw,
             img: boy,
             title: 'IMPETUS',
             className: 'boy'
         },{
-            audio: track10,
+            post: track10,
+            org: track10Raw,
             img: img8,
             title: 'RAILROAD SWITCH',
             className: ''
@@ -105,6 +125,9 @@ class App extends React.Component {
         this.imgClass = this.albumArray[0].className;
         this.progressTimer = null;
         this.debounceTimer = null;
+        this.audioType = 'org';
+        this.onLoadMedia = this.onLoadMedia.bind(this);
+        this.playNext = this.playNext.bind(this);
     }
 
 
@@ -150,7 +173,12 @@ class App extends React.Component {
         }
     }
 
+    playNext() {
+        this.initAudio('next');
+    }
+
     initAudio(type) {
+        console.log(type);
         const curTrack = this.state.currentTrack;
         let nextTrack = this.state.currentTrack;
         if(type && type === 'next') {
@@ -167,19 +195,27 @@ class App extends React.Component {
                 --nextTrack;
             }
         }
-        this.audio.removeEventListener("ended", this.initAudio.bind(this, 'next'));
+        console.log('hello');
+        this.audio.removeEventListener("ended", this.playNext);
+
         this.setState({currentTrack: nextTrack});
-        this.audio.src = this.albumArray[nextTrack].audio;
+        this.audio.src = this.albumArray[nextTrack][this.audioType];
         this.image = this.albumArray[nextTrack].img;
         this.title = this.albumArray[nextTrack].title;
         this.imgClass = this.albumArray[nextTrack].className;
         this.audio.crossOrigin = "anonymous";
-        this.audio.load();
+        this.audio.addEventListener('loadeddata', this.onLoadMedia);
         this.setState({audioObject: this.audio});
+        this.audio.load();
+    }
+
+    onLoadMedia(e, d) {
+        console.log('trigger event');
+        this.audio.removeEventListener("loadeddata", this.onLoadMedia);
         this.setVolume();
         this.startProgressInteraval();
         this.audio.play();
-        this.audio.addEventListener("ended", this.initAudio.bind(this, 'next'));
+        this.audio.addEventListener("ended", this.playNext);
     }
 
     setTrackPosition(value) {
@@ -223,7 +259,7 @@ class App extends React.Component {
                     <Space />
                     <Visualiser startAnimation={this.state.play} audio={this.state.audioObject}/>
                     <img className={"trackImage " + this.imgClass} src={this.image} alt={"logo"} />
-                    <CircularInput className={'progressSwitcher'} value={this.playTime} onChange={this.setTrackPosition} radius={166}>
+                    <CircularInput className={'progressSwitcher'} value={this.playTime ? this.playTime : 0} onChange={this.setTrackPosition} radius={166}>
                         <CircularTrack strokeWidth={4} stroke="#86c06c"/>
                         <CircularProgress strokeWidth={10} stroke="#dff8d0"/>
                     </CircularInput>
