@@ -1,6 +1,7 @@
 @import "scss-variables";
 @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
 @import "~react-input-range-ios-fix/lib/css/index.css";
+@import "~@appigram/react-rangeslider/lib/index.css";
 $material-icons-font-path: '~material-icons/iconfont/';
 @import '~material-icons/iconfont/material-icons.scss';
 
@@ -19,6 +20,37 @@ body {
   font-family: 'Orbitron', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+.App {
+  &:before {
+    content: "";
+    position: absolute;
+    width: 400%;
+    height: 400%;
+    top: -150%;
+    left: -150%;
+    //background-image: url('./image/milky_way.jpg');
+    background-position: 50% 50%;
+    background-size: 30%;
+    background-repeat: no-repeat;
+    animation-name: milkyway;
+    animation-duration: 600s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    opacity: 0.5;
+  }
+}
+
+@keyframes milkyway {
+  0%   {
+    transform: rotate(0deg);
+  }
+  50%  {
+    transform: rotate(-180deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
 }
 
 * { padding:0; margin:0;}
@@ -235,4 +267,10 @@ html, body {
   line-height: 24px;
   vertical-align: middle;
   transition: color 0.2s;
+}
+.volumeValue {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  color: #86c06c;
 }

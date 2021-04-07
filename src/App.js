@@ -42,6 +42,7 @@ import img9 from "./image/mup-transparent.gif";
 import boy from './image/boy.svg';
 
 import InputRange from "react-input-range-ios-fix";
+import Slider from '@appigram/react-rangeslider'
 
 
 class App extends React.Component {
@@ -51,7 +52,8 @@ class App extends React.Component {
             play: false,
             audioObject: null,
             currentTrack: 0,
-            volume: 70
+            volume: 70,
+            settings: false
         };
         this.playTime = 0;
         this.audio = new Audio();
@@ -127,7 +129,9 @@ class App extends React.Component {
         this.debounceTimer = null;
         this.audioType = 'org';
         this.currentTime = 0;
-        this.settingsVisibility = false;
+        this.isIOS = (/iPad|iPhone|iPod/.test(navigator.platform) ||
+            (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) &&
+            !window.MSStream;
         this.onLoadMedia = this.onLoadMedia.bind(this);
         this.playNext = this.playNext.bind(this);
         this.setAudioType = this.setAudioType.bind(this);
@@ -135,7 +139,7 @@ class App extends React.Component {
     }
 
     showSettings() {
-        this.settingsVisibility = !this.settingsVisibility;
+        this.setState({settings: !this.state.settings})
     }
 
     handleButtonClick() {
@@ -271,34 +275,37 @@ class App extends React.Component {
         };
 
         const renderImage = () => {
-            if (!this.settingsVisibility) {
+            if (!this.state.settings) {
                 return (<img className={"trackImage " + this.imgClass} src={this.image} alt={"logo"} />);
             }
             return false;
         };
 
+        const renderVolControl = () => {
+            if (!this.isIOS) {
+                return (
+                    <>
+                        <Slider
+                        max={100}
+                        min={0}
+                        value={this.state.volume}
+                        orientation="horizontal"
+                        onChange={this.setVolume} />
+                    </>
+                )
+            }
+            return false;
+        }
+
         const renderSettings = () => {
-            if (this.settingsVisibility) {
+            if (this.state.settings) {
                 return (
                     <div className={"settings"}>
-                        <span className={"settings__title"}>post processing</span>
+                        {renderVolControl()}
+                        <span className={"settings__title"}>post chiptune</span>
                         <span className={this.audioType === 'post' ? 'switcherHeader active' : 'switcherHeader'} onClick={this.setAudioType}>
                             OFF {renderAudioTypeButton()} ON.
                         </span>
-                        <span className={"settings__title"}>volume</span>
-                        <InputRange
-                            classNames={{
-                                activeTrack: 'input-range__track input-range__track--active',
-                                inputRange: 'input-range volumeSwitcher',
-                                slider: 'input-range__slider',
-                                sliderContainer: 'input-range__slider-container',
-                                track: 'input-range__track input-range__track--background'
-                            }}
-                            maxValue={100}
-                            minValue={0}
-                            value={this.state.volume}
-                            onChange={this.setVolume} />
-
                     </div>
                 );
             }
@@ -306,14 +313,19 @@ class App extends React.Component {
         };
 
         const renderSettingsIcon = () => {
-            if (this.settingsVisibility) {
+            if (this.state.settings) {
                 return (<span className={"menuIcon material-icons md-36"} onClick={this.showSettings} >close</span>);
             }
             return (<span className={"menuIcon material-icons md-36"} onClick={this.showSettings}>settings</span>);
         }
 
         const renderVisualizer = () => {
-            return(<Visualiser startAnimation={this.state.play} audio={this.state.audioObject}/>);
+            let isIOS = (/iPad|iPhone|iPod/.test(navigator.platform) ||
+                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) &&
+                !window.MSStream;
+            if (!this.isIOS) {
+                return(<Visualiser startAnimation={this.state.play} audio={this.state.audioObject}/>);
+            }
         }
 
         if (this.state.play) {

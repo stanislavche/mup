@@ -12,11 +12,23 @@ class Visualiser extends React.Component {
         this.analyser = null
         this.frequencyArray = [];
         this.updateVisualization = this.updateVisualization.bind(this);
+
+        //perfomance increase
+        this.stop = false;
+        this.frameCount = 0;
+        this.fps = null;
+        this.fpsInterval = 1000 / 24;
+        this.startTime = null;
+        this.now = null;
+        this.then = null;
+        this.elapsed = null;
     }
 
     initCanvas() {
         this.canvas = this.canvasRef.current;
         this.ctx = this.canvas.getContext("2d");
+        this.then = window.performance.now();
+        this.startTime = this.then;
         this.updateVisualization();
     }
 
@@ -75,16 +87,26 @@ class Visualiser extends React.Component {
         }
     }
 
-    updateVisualization() {
+    updateVisualization(newTime) {
+        if (this.stop) {
+            return;
+        }
         if (this.isPlaying) {
             if (this.canvasRef.current) {
-                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                this.ctx.save();
-                this.ctx.globalCompositeOperation = 'color-dodge';
-                this.ctx.translate(window.innerWidth / 2, window.innerHeight / 2);
 
-                this.drawCanvas();
                 this.requestRef.current = requestAnimationFrame(this.updateVisualization);
+                this.now = newTime;
+                this.elapsed = this.now - this.then;
+
+                if (this.elapsed > this.fpsInterval) {
+                    this.then = this.now - (this.elapsed % this.fpsInterval);
+                    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                    this.ctx.save();
+                    this.ctx.globalCompositeOperation = 'color-dodge';
+                    this.ctx.translate(window.innerWidth / 2, window.innerHeight / 2);
+
+                    this.drawCanvas();
+                }
             }
         }
     }
