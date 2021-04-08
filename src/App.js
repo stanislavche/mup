@@ -302,7 +302,7 @@ class App extends React.Component {
                 return (
                     <div className={"settings"}>
                         {renderVolControl()}
-                        <span className={"settings__title"}>post chiptune</span>
+                        <span className={"settings__title"}>mastering</span>
                         <span className={this.audioType === 'post' ? 'switcherHeader active' : 'switcherHeader'} onClick={this.setAudioType}>
                             OFF {renderAudioTypeButton()} ON.
                         </span>
