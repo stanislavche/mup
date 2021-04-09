@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/mup/static/css/main.82ee4d10.chunk.css",
-    "main.js": "/mup/static/js/main.4a2b65cf.chunk.js",
-    "main.js.map": "/mup/static/js/main.4a2b65cf.chunk.js.map",
+    "main.js": "/mup/static/js/main.bb5a81f3.chunk.js",
+    "main.js.map": "/mup/static/js/main.bb5a81f3.chunk.js.map",
     "runtime-main.js": "/mup/static/js/runtime-main.827d3b5d.js",
     "runtime-main.js.map": "/mup/static/js/runtime-main.827d3b5d.js.map",
     "static/css/2.df3e7b99.chunk.css": "/mup/static/css/2.df3e7b99.chunk.css",
@@ -34,7 +34,7 @@
     "static/media/9.0d0a187a.mp3": "/mup/static/media/9.0d0a187a.mp3",
     "static/media/index.scss": "/mup/static/media/milky_way.51f6864b.gif",
     "static/media/boy.09e91660.svg": "/mup/static/media/boy.09e91660.svg",
-    "static/media/boy.af3ba34e.gif": "/mup/static/media/boy.af3ba34e.gif",
+    "static/media/boy.1ef3b20a.gif": "/mup/static/media/boy.1ef3b20a.gif",
     "static/media/dream.58a4d582.gif": "/mup/static/media/dream.58a4d582.gif",
     "static/media/mup-transparent.39296262.gif": "/mup/static/media/mup-transparent.39296262.gif",
     "static/media/popcorn.7b06dbf9.gif": "/mup/static/media/popcorn.7b06dbf9.gif",
@@ -47,6 +47,6 @@
     "static/css/2.df3e7b99.chunk.css",
     "static/js/2.a6dee494.chunk.js",
     "static/css/main.82ee4d10.chunk.css",
-    "static/js/main.4a2b65cf.chunk.js"
+    "static/js/main.bb5a81f3.chunk.js"
   ]
 }
