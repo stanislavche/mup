@@ -54,64 +54,73 @@ class App extends React.Component {
             audioObject: null,
             currentTrack: 0,
             volume: 100,
-            settings: false
+            settings: false,
+            bass: 100
         };
+        this.titleRef = React.createRef();
         this.playTime = 0;
         this.audio = new Audio();
+        // this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        // this.audioContextSync = false;
+        // this.gainNode = this.audioContext.createGain();
+        // this.bassFilter = this.audioContext.createBiquadFilter();
+
+
         this.handleButtonClick = this.handleButtonClick.bind(this);
         this.setVolume = this.setVolume.bind(this);
         this.setTrackPosition = this.setTrackPosition.bind(this);
+        this.setBass = this.setBass.bind(this);
 
         this.albumArray = [{
             post: track1,
             org: track1Raw,
             img: img1,
-            title: 'SERENITY'
+            title: 'S_TN *** SERENITY ***'
         },{
             post: track2,
             org: track2Raw,
             img: img6,
-            title: 'HOLY ROCKET'
+            title: 'S_TN *** HOLY ROCKET ***'
         },{
             post: track3,
             org: track3Raw,
             img: boy,
-            title: 'PROMISE'
+            title: 'S_TN *** PROMISE ***'
         },{
             post: track4,
             org: track4Raw,
             img: img4,
-            title: 'SPACE TIME',
+            title: 'S_TN *** SPACE TIME ***',
         },{
             post: track5,
             org: track5Raw,
             img: img5,
-            title: 'POPCORN'
+            title: 'S_TN *** POPCORN ***'
         },{
             post: track6,
             org: track6Raw,
             img: img6,
-            title: 'GOAL ACHIEVEMENT'
+            title: 'S_TN *** GOAL ACHIEVEMENT ***'
         },{
             post: track7,
             org: track7Raw,
             img: img7,
-            title: 'CRYOGENIC DREAM'
+            title: 'S_TN *** CRYOGENIC DREAM ***'
         },{
             post: track8,
             org: track8Raw,
             img: img3,
-            title: 'STARWAY'
+            title: 'S_TN *** STARWAY ***'
         },{
             post: track9,
             org: track9Raw,
             img: boy,
-            title: 'IMPETUS'
+            title: 'S_TN feat BALLONBEAR *** IMPETUS ***'
         },{
             post: track10,
             org: track10Raw,
             img: img8,
-            title: 'RAILROAD SWITCH'
+            title: 'S_TN *** RAILROAD SWITCH ***'
         }];
         this.image = this.albumArray[0].img;
         this.title = this.albumArray[0].title;
@@ -155,6 +164,14 @@ class App extends React.Component {
             this.audio.volume = volume/100;
         } else {
             this.audio.volume = this.state.volume/100;
+        }
+    }
+
+    setBass(bassVol) {
+        if(bassVol) {
+            this.setState({bass: bassVol});
+        } else {
+            console.log(bassVol);
         }
     }
 
@@ -211,7 +228,12 @@ class App extends React.Component {
         this.audio.load();
     }
 
-    onLoadMedia(e, d) {
+    onLoadMedia() {
+        if (!this.audioContextSync) {
+            this.audioContextSync = true;
+
+        }
+
         console.log('trigger event');
         this.audio.removeEventListener("loadeddata", this.onLoadMedia);
         this.setVolume();
@@ -245,111 +267,150 @@ class App extends React.Component {
         this.audio.pause();
         this.initAudio('typeChange');
     }
+    renderSettings() {
+        if (this.state.settings) {
+            return (
+                <div className={"settings"}>
+                    {this.renderVolControl()}
+                    <span className={"settings__title"}>bass</span>
+                    <Slider
+                        max={100}
+                        min={0}
+                        tooltip={false}
+                        value={this.state.bass}
+                        orientation="horizontal"
+                        onChange={this.setBass} />
+                    <span className={"settings__title"}>mastering</span>
+                    <span className={this.audioType === 'post' ? 'switcherHeader active' : 'switcherHeader'} onClick={this.setAudioType}>
+                            OFF {this.renderAudioTypeButton()} ON.
+                        </span>
 
-    render() {
-        const renderButton = () => {
-            if (this.audio && !this.audio.paused) {
-                return (
-                    <span className="startButton material-icons md-48" onClick={this.handleButtonClick}>pause</span>
-                );
-            }
-            return(<span className="startButton inactive material-icons md-48" onClick={this.handleButtonClick}>play_arrow</span>);
-        };
+                </div>
+            );
+        }
+        return false;
+    }
 
-        const renderAudioTypeButton = () => {
-            if (this.audioType === 'org') {
-                return (
-                    <span className="audioSwitcher material-icons md-48">toggle_off</span>
-                );
-            }
-            return(<span className="audioSwitcher material-icons md-48">toggle_on</span>);
-        };
+    renderSettingsIcon() {
+        if (this.state.settings) {
+            return (<span className={"menuIcon material-icons md-36"} onClick={this.showSettings} >close</span>);
+        }
+        return (<span className={"menuIcon material-icons md-36"} onClick={this.showSettings}>touch_app</span>);
+    }
 
-        const renderImage = () => {
-            if (!this.state.settings) {
-                return (<img className={"trackImage"} src={this.image} alt={"logo"} />);
-            }
-            return false;
-        };
+    renderButton() {
+        if (this.audio && !this.audio.paused) {
+            return (
+                <span className="startButton material-icons md-48" onClick={this.handleButtonClick}>pause</span>
+            );
+        }
+        return(<span className="startButton inactive material-icons md-48" onClick={this.handleButtonClick}>play_arrow</span>);
+    }
 
-        const renderVolControl = () => {
-            if (!this.isIOS) {
-                return (
-                    <>
-                        <Slider
+    renderVisualizer() {
+        if (!this.isIOS && !this.isAndroid && !this.isConsole) {
+            return(<Visualiser startAnimation={this.state.play} audio={this.state.audioObject}/>);
+        }
+    }
+
+    renderImage() {
+        if (!this.state.settings) {
+            return (<img className={"trackImage"} src={this.image} alt={"logo"} />);
+        }
+        return false;
+    }
+
+    renderVolControl() {
+        if (!this.isIOS) {
+            return (
+                <>
+                    <span className={"settings__title"}>volume</span>
+                    <Slider
                         max={100}
                         min={0}
                         tooltip={false}
                         value={this.state.volume}
                         orientation="horizontal"
                         onChange={this.setVolume} />
-                    </>
-                )
-            }
-            return false;
+                </>
+            )
         }
+        return false;
+    }
 
-        const renderSettings = () => {
-            if (this.state.settings) {
-                return (
-                    <div className={"settings"}>
-                        {renderVolControl()}
-                        <span className={"settings__title"}>mastering</span>
-                        <span className={this.audioType === 'post' ? 'switcherHeader active' : 'switcherHeader'} onClick={this.setAudioType}>
-                            OFF {renderAudioTypeButton()} ON.
-                        </span>
-                    </div>
-                );
-            }
-            return false;
-        };
-
-        const renderSettingsIcon = () => {
-            if (this.state.settings) {
-                return (<span className={"menuIcon material-icons md-36"} onClick={this.showSettings} >close</span>);
-            }
-            return (<span className={"menuIcon material-icons md-36"} onClick={this.showSettings}>touch_app</span>);
+    renderAudioTypeButton() {
+        if (this.audioType === 'org') {
+            return (
+                <span className="audioSwitcher material-icons md-48">toggle_off</span>
+            );
         }
+        return(<span className="audioSwitcher material-icons md-48">toggle_on</span>);
+    }
 
-        const renderVisualizer = () => {
-            if (!this.isIOS && !this.isAndroid && !this.isConsole) {
-                return(<Visualiser startAnimation={this.state.play} audio={this.state.audioObject}/>);
-            }
+    initAudioApi() {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        var gainNode = audioContext.createGain();
+        gainNode.gain.value = 0.5;
+    }
+
+    setTitle() {
+        const text = this.albumArray[this.state.currentTrack].title;
+        const characters = [];
+        for (let i = 0; i < text.length; i++) {
+            let r = (360/text.length)*(i);
+            let x = (Math.PI/text.length).toFixed(0) * (i);
+            let y = (Math.PI/text.length).toFixed(0) * (i);
+            const divStyle = {
+                transform: 'rotateZ('+r+'deg) translate3d('+x+'px,'+y+'px,0)',
+                webkitTransform: 'rotateZ('+r+'deg) translate3d('+x+'px,'+y+'px,0)'
+            };
+            characters.push(<span style={divStyle}>{text[i]}</span>);
         }
+        return characters;
+    }
 
+    renderScene() {
         if (this.state.play) {
             return (
-                <div className="App" >
-                    <Space />
-                    {renderVisualizer()}
+                <>
+                    {this.renderVisualizer()}
                     <div className={"imageWrapper"}>
-                        {renderImage()}
+                        {this.renderImage()}
+                        <div className={"trackTitle"}>{this.setTitle()}</div>
                     </div>
                     <CircularInput className={'progressSwitcher'} value={this.playTime ? this.playTime : 0} onChange={this.setTrackPosition} radius={166}>
                         <CircularTrack strokeWidth={4} stroke="#86c06c"/>
                         <CircularProgress strokeWidth={10} stroke="#dff8d0"/>
                     </CircularInput>
-                    {renderButton()}
+                    {this.renderButton()}
                     <span className={"switcher next material-icons md-48"} onClick={this.initAudio.bind(this, 'next')}>
                         arrow_forward_ios
                     </span>
                     <span className={"switcher prev material-icons md-48"} onClick={this.initAudio.bind(this, 'prev')}>
                         arrow_back_ios
                     </span>
-                    {renderSettingsIcon()}
-                    {renderSettings()}
-                </div>
+                    {this.renderSettingsIcon()}
+                    {this.renderSettings()}
+                </>
             )
         } else {
-           return (
-               <div className="App" >
-                   <Space />
-                   <img className={"mainLogo"} src={img9} alt={"logo"} />
-                   {renderButton()}
-                   <span className={"material-icons hidden-text"}>arrow_forward_ios</span>
-               </div>
-           );
+            return (
+                <>
+                    <img className={"mainLogo"} src={img9} alt={"logo"} />
+                    {this.renderButton()}
+                    <span className={"material-icons hidden-text"}>arrow_forward_ios</span>
+                </>
+            );
         }
+    }
+
+    render() {
+        return(
+            <div className="App" >
+                <Space />
+                {this.renderScene()}
+            </div>
+        )
     }
 }
 

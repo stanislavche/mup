@@ -292,7 +292,44 @@ html, body {
 
 .rangeslider {
   background-color: #86c06c;
+  margin: 6px 0 10px;
+  cursor: pointer;
 }
+
+.trackTitle {
+  color: #dff8d0;
+  font-size: 10px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  margin: 0 auto;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  animation: spinZ 60s linear infinite;
+  text-align: center;
+  span {
+    position: absolute;
+    display: inline-block;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    text-transform: uppercase;
+    line-height: 20px;
+  }
+
+  @keyframes spinZ {
+    0% {
+      transform: rotateZ(360deg);
+    }
+    100% {
+      transform: rotateZ(0deg);
+    }
+  }
+}
+
 .rangeslider-horizontal {
   height: 6px;
   position: relative;
@@ -314,4 +351,5 @@ html, body {
     position: absolute;
     top: -1px;
   }
+
 }
