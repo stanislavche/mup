@@ -22,34 +22,21 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 .App {
-  //&:before {
-  //  content: "";
-  //  position: absolute;
-  //  width: 400%;
-  //  height: 400%;
-  //  top: -150%;
-  //  left: -150%;
-  //  //background-image: url('./image/milky_way.jpg');
-  //  background-position: 50% 50%;
-  //  background-size: 30%;
-  //  background-repeat: no-repeat;
-  //  animation-name: milkyway;
-  //  animation-duration: 600s;
-  //  animation-iteration-count: infinite;
-  //  animation-timing-function: linear;
-  //  opacity: 0.2;
-  //}
-}
-
-@keyframes milkyway {
-  0%   {
-    transform: rotate(0deg);
-  }
-  50%  {
-    transform: rotate(-180deg);
-  }
-  100% {
-    transform: rotate(-360deg);
+  width: 100%;
+  height: 100%;
+  position: relative;
+  &:before {
+    width: 100%;
+    height: 100%;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-image: url('./image/milky_way.gif');
+    background-position: 50% 50%;
+    background-size: 60%;
+    background-repeat: no-repeat;
+    opacity: 0.05;
   }
 }
 
@@ -277,6 +264,16 @@ html, body {
   display: block;
   border-radius: 50%;
   overflow: hidden;
+  &:after{
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url("./image/bubble.png");
+    top:0;
+    background-size: cover;
+    left: 0;
+  }
 }
 
 .trackImage {

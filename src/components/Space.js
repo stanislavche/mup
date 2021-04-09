@@ -29,7 +29,7 @@ class Space  extends React.Component {
         this.canvas = this.canvasRef.current;
         this.ctx = this.canvas.getContext("2d");
         this.setCanvasExtents();
-        this.stars = this.makeStars(300);
+        this.stars = this.makeStars(600);
         this.init = this.init.bind(this);
         this.tick = this.tick.bind(this);
         requestAnimationFrame(this.init);

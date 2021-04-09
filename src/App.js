@@ -43,6 +43,7 @@ import boy from './image/boy.gif';
 
 import InputRange from "react-input-range-ios-fix";
 import Slider from '@appigram/react-rangeslider'
+const cUserAgent = navigator.userAgent.toLowerCase();
 
 
 class App extends React.Component {
@@ -121,7 +122,8 @@ class App extends React.Component {
         this.isIOS = (/iPad|iPhone|iPod/.test(navigator.platform) ||
             (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) &&
             !window.MSStream;
-        this.isAndroid = navigator.userAgent.toLowerCase().indexOf("android") > -1;
+        this.isAndroid = cUserAgent.indexOf("android") > -1;
+        this.isConsole = cUserAgent.indexOf("xbox") > -1 || cUserAgent.indexOf("playStation") > -1 || cUserAgent.indexOf("nintendo") > -1 || cUserAgent.indexOf("crkey") > -1;
         this.onLoadMedia = this.onLoadMedia.bind(this);
         this.playNext = this.playNext.bind(this);
         this.setAudioType = this.setAudioType.bind(this);
@@ -310,7 +312,7 @@ class App extends React.Component {
         }
 
         const renderVisualizer = () => {
-            if (!this.isIOS && !this.isAndroid) {
+            if (!this.isIOS && !this.isAndroid && !this.isConsole) {
                 return(<Visualiser startAnimation={this.state.play} audio={this.state.audioObject}/>);
             }
         }
