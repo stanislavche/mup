@@ -121,6 +121,7 @@ class App extends React.Component {
         this.isIOS = (/iPad|iPhone|iPod/.test(navigator.platform) ||
             (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) &&
             !window.MSStream;
+        this.isAndroid = navigator.userAgent.toLowerCase().indexOf("android") > -1;
         this.onLoadMedia = this.onLoadMedia.bind(this);
         this.playNext = this.playNext.bind(this);
         this.setAudioType = this.setAudioType.bind(this);
@@ -309,10 +310,7 @@ class App extends React.Component {
         }
 
         const renderVisualizer = () => {
-            let isIOS = (/iPad|iPhone|iPod/.test(navigator.platform) ||
-                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) &&
-                !window.MSStream;
-            if (!this.isIOS) {
+            if (!this.isIOS && !this.isAndroid) {
                 return(<Visualiser startAnimation={this.state.play} audio={this.state.audioObject}/>);
             }
         }
@@ -320,6 +318,7 @@ class App extends React.Component {
         if (this.state.play) {
             return (
                 <div className="App" >
+                    <Space />
                     {renderVisualizer()}
                     <div className={"imageWrapper"}>
                         {renderImage()}

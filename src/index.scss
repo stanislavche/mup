@@ -22,23 +22,23 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 .App {
-  &:before {
-    content: "";
-    position: absolute;
-    width: 400%;
-    height: 400%;
-    top: -150%;
-    left: -150%;
-    //background-image: url('./image/milky_way.jpg');
-    background-position: 50% 50%;
-    background-size: 30%;
-    background-repeat: no-repeat;
-    animation-name: milkyway;
-    animation-duration: 600s;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-    opacity: 0.2;
-  }
+  //&:before {
+  //  content: "";
+  //  position: absolute;
+  //  width: 400%;
+  //  height: 400%;
+  //  top: -150%;
+  //  left: -150%;
+  //  //background-image: url('./image/milky_way.jpg');
+  //  background-position: 50% 50%;
+  //  background-size: 30%;
+  //  background-repeat: no-repeat;
+  //  animation-name: milkyway;
+  //  animation-duration: 600s;
+  //  animation-iteration-count: infinite;
+  //  animation-timing-function: linear;
+  //  opacity: 0.2;
+  //}
 }
 
 @keyframes milkyway {
