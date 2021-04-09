@@ -39,7 +39,7 @@ import img6 from "./image/siting.gif";
 import img7 from "./image/dream.gif";
 import img8 from "./image/rail.gif";
 import img9 from "./image/mup-transparent.gif";
-import boy from './image/boy.svg';
+import boy from './image/boy.gif';
 
 import InputRange from "react-input-range-ios-fix";
 import Slider from '@appigram/react-rangeslider'
@@ -52,7 +52,7 @@ class App extends React.Component {
             play: false,
             audioObject: null,
             currentTrack: 0,
-            volume: 70,
+            volume: 100,
             settings: false
         };
         this.playTime = 0;
@@ -65,66 +65,55 @@ class App extends React.Component {
             post: track1,
             org: track1Raw,
             img: img1,
-            title: 'SERENITY',
-            className: ''
+            title: 'SERENITY'
         },{
             post: track2,
             org: track2Raw,
             img: img6,
-            title: 'HOLY ROCKET',
-            className: ''
+            title: 'HOLY ROCKET'
         },{
             post: track3,
             org: track3Raw,
             img: boy,
-            title: 'PROMISE',
-            className: 'boy'
+            title: 'PROMISE'
         },{
             post: track4,
             org: track4Raw,
             img: img4,
             title: 'SPACE TIME',
-            className: ''
         },{
             post: track5,
             org: track5Raw,
             img: img5,
-            title: 'POPCORN',
-            className: ''
+            title: 'POPCORN'
         },{
             post: track6,
             org: track6Raw,
             img: img6,
-            title: 'GOAL ACHIEVEMENT',
-            className: ''
+            title: 'GOAL ACHIEVEMENT'
         },{
             post: track7,
             org: track7Raw,
             img: img7,
-            title: 'CRYOGENIC DREAM',
-            className: ''
+            title: 'CRYOGENIC DREAM'
         },{
             post: track8,
             org: track8Raw,
             img: img3,
-            title: 'STARWAY',
-            className: ''
+            title: 'STARWAY'
         },{
             post: track9,
             org: track9Raw,
             img: boy,
-            title: 'IMPETUS',
-            className: 'boy'
+            title: 'IMPETUS'
         },{
             post: track10,
             org: track10Raw,
             img: img8,
-            title: 'RAILROAD SWITCH',
-            className: ''
+            title: 'RAILROAD SWITCH'
         }];
         this.image = this.albumArray[0].img;
         this.title = this.albumArray[0].title;
-        this.imgClass = this.albumArray[0].className;
         this.progressTimer = null;
         this.debounceTimer = null;
         this.audioType = 'org';
@@ -213,7 +202,6 @@ class App extends React.Component {
         this.audio.src = this.albumArray[nextTrack][this.audioType];
         this.image = this.albumArray[nextTrack].img;
         this.title = this.albumArray[nextTrack].title;
-        this.imgClass = this.albumArray[nextTrack].className;
         this.audio.crossOrigin = "anonymous";
         this.audio.addEventListener('loadeddata', this.onLoadMedia);
         this.setState({audioObject: this.audio});
@@ -259,10 +247,10 @@ class App extends React.Component {
         const renderButton = () => {
             if (this.audio && !this.audio.paused) {
                 return (
-                    <span className="startButton material-icons md-48" onClick={this.handleButtonClick}>pause_circle_filled</span>
+                    <span className="startButton material-icons md-48" onClick={this.handleButtonClick}>pause</span>
                 );
             }
-            return(<span className="startButton material-icons md-48" onClick={this.handleButtonClick}>play_circle_filled</span>);
+            return(<span className="startButton inactive material-icons md-48" onClick={this.handleButtonClick}>play_arrow</span>);
         };
 
         const renderAudioTypeButton = () => {
@@ -276,7 +264,7 @@ class App extends React.Component {
 
         const renderImage = () => {
             if (!this.state.settings) {
-                return (<img className={"trackImage " + this.imgClass} src={this.image} alt={"logo"} />);
+                return (<img className={"trackImage"} src={this.image} alt={"logo"} />);
             }
             return false;
         };
@@ -288,6 +276,7 @@ class App extends React.Component {
                         <Slider
                         max={100}
                         min={0}
+                        tooltip={false}
                         value={this.state.volume}
                         orientation="horizontal"
                         onChange={this.setVolume} />
@@ -316,7 +305,7 @@ class App extends React.Component {
             if (this.state.settings) {
                 return (<span className={"menuIcon material-icons md-36"} onClick={this.showSettings} >close</span>);
             }
-            return (<span className={"menuIcon material-icons md-36"} onClick={this.showSettings}>settings</span>);
+            return (<span className={"menuIcon material-icons md-36"} onClick={this.showSettings}>touch_app</span>);
         }
 
         const renderVisualizer = () => {
@@ -331,9 +320,10 @@ class App extends React.Component {
         if (this.state.play) {
             return (
                 <div className="App" >
-                    <Space />
                     {renderVisualizer()}
-                    {renderImage()}
+                    <div className={"imageWrapper"}>
+                        {renderImage()}
+                    </div>
                     <CircularInput className={'progressSwitcher'} value={this.playTime ? this.playTime : 0} onChange={this.setTrackPosition} radius={166}>
                         <CircularTrack strokeWidth={4} stroke="#86c06c"/>
                         <CircularProgress strokeWidth={10} stroke="#dff8d0"/>

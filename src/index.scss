@@ -37,7 +37,7 @@ body {
     animation-duration: 600s;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
-    opacity: 0.5;
+    opacity: 0.2;
   }
 }
 
@@ -104,14 +104,14 @@ html, body {
   top: calc(50% - 24px);
   vertical-align: middle;
   transform: translateX(-50%);
-  text-shadow: 3px 0px 2px #071820 ;
+  text-shadow: 3px 1px 2px #071820 ;
   transition: all 0.2s;
-  opacity: 0.4;
+  opacity: 0.2;
   &.prev {
-    left: calc(50% - 112px);
+    left: calc(50% - 122px);
   }
   &.next {
-    left: calc(50% + 120px);
+    left: calc(50% + 134px);
   }
   &:hover{
     opacity: 1;
@@ -120,14 +120,12 @@ html, body {
   }
 }
 
-
-
 .startButton{
   font-size: 30px;
   z-index: 1000;
   cursor: pointer;
   padding: 0;
-  text-shadow: 2px 2px 2px #071820 ;
+  text-shadow: 3px 1px 2px #071820 ;
   position: fixed;
   margin: 0 auto;
   color: #dff8d0;
@@ -135,7 +133,10 @@ html, body {
   left: 50%;
   transform: translateX(-50%);
   transition: color 0.2s, opacity 0.2s;
-  opacity: 0.4;
+  opacity: 0.2;
+  &.inactive {
+    opacity: 1;
+  }
   &:hover{
     opacity: 1;
     color: #86c06c;
@@ -193,22 +194,6 @@ html, body {
   left: 0;
   opacity: 0;
 }
-.trackImage {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 338px;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  overflow: hidden;
-  display: block;
-  &.boy {
-    left: calc(50% + 4px);
-    width: 200px;
-    border-radius: 0;
-  }
-}
-
 
 .menuIcon{
   position: fixed;
@@ -217,6 +202,13 @@ html, body {
   transform: translate(-50%, -50%);
   cursor: pointer;
   padding: 6px;
+  text-shadow: 3px 1px 2px #071820 ;
+  transition: color 0.2s, opacity 0.2s;
+  opacity: 0.2;
+  &:hover{
+    opacity: 1;
+    color: #86c06c;
+  }
 }
 
 .settings{
@@ -248,7 +240,7 @@ html, body {
   margin: 0 auto 4px;
   display: block;
   cursor: pointer;
-  text-shadow: 3px 0px 2px #071820 ;
+  text-shadow: 3px 1px 2px #071820 ;
   color: #86c06c;
   transition: color 0.2s;
   &.active {
@@ -273,4 +265,56 @@ html, body {
   top: 10px;
   left: 50%;
   color: #86c06c;
+}
+
+.imageWrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 324px;
+  height: 324px;
+  display: block;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.trackImage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 324px;
+  display: block;
+  &.boy {
+    left: calc(50% + 4px);
+    width: 200px;
+    border-radius: 0;
+  }
+}
+
+.rangeslider {
+  background-color: #86c06c;
+}
+.rangeslider-horizontal {
+  height: 6px;
+  position: relative;
+  & .rangeslider__handle{
+    width: 16px;
+    height: 16px;
+    background-color: #dff8d0;
+    box-shadow: none;
+    outline: none;
+    &:after{
+      display: none;
+    }
+
+  }
+  & .rangeslider__fill{
+    background-color: #dff8d0;
+    height: 10px;
+    width: 139px;
+    position: absolute;
+    top: -1px;
+  }
 }
