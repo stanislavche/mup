@@ -365,13 +365,6 @@ class App extends React.Component {
         const text = this.albumArray[this.state.currentTrack].title;
         const characters = [];
         for (let i = 0; i < text.length; i++) {
-            let r = (360/text.length)*(i);
-            let x = (Math.PI/text.length).toFixed(0) * (i);
-            let y = (Math.PI/text.length).toFixed(0) * (i);
-            const divStyle = {
-                WebkitTransform: 'rotateZ('+r+'deg) translate3d('+x+'px,'+y+'px,0)',
-                transform: 'rotateZ('+r+'deg) translate3d('+x+'px,'+y+'px,0)'
-            };
             characters.push(<span key={'char-' + i} className={'char char-' + i}>{text[i]}</span>);
         }
         return characters;
