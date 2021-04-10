@@ -41,8 +41,8 @@ import img8 from "./image/rail.gif";
 import img9 from "./image/mup-transparent.gif";
 import boy from './image/boy.gif';
 
-import InputRange from "react-input-range-ios-fix";
 import Slider from '@appigram/react-rangeslider'
+import Share from "./components/Share";
 const cUserAgent = navigator.userAgent.toLowerCase();
 
 
@@ -308,9 +308,9 @@ class App extends React.Component {
     renderSettings() {
         if (this.state.mode === 'settings') {
             return (
-                <div className={"settings"}>
+                <div className={"settings subWrapper"}>
                     {this.renderVolControl()}
-                    <span className={"settings__title"}>bass</span>
+                    <span className={"subWrapper__title"}>bass</span>
                     <Slider
                         max={100}
                         min={0}
@@ -318,7 +318,7 @@ class App extends React.Component {
                         value={this.state.bass}
                         orientation="horizontal"
                         onChange={this.setBass} />
-                    <span className={"settings__title"}>treble</span>
+                    <span className={"subWrapper__title"}>treble</span>
                     <Slider
                         max={100}
                         min={0}
@@ -326,11 +326,21 @@ class App extends React.Component {
                         value={this.state.treble}
                         orientation="horizontal"
                         onChange={this.setTreble} />
-                    <span className={"settings__title"}>mastering</span>
+                    <span className={"subWrapper__title"}>mastering</span>
                     <span className={this.audioType === 'post' ? 'switcherHeader active' : 'switcherHeader'} onClick={this.setAudioType}>
                             OFF {this.renderAudioTypeButton()} ON.
                         </span>
 
+                </div>
+            );
+        }
+        return false;
+    }
+    renderShare() {
+        if (this.state.mode === 'share') {
+            return (
+                <div className={"share subWrapper"}>
+                    <Share />
                 </div>
             );
         }
@@ -376,7 +386,7 @@ class App extends React.Component {
         if (!this.isIOS) {
             return (
                 <>
-                    <span className={"settings__title"}>volume</span>
+                    <span className={"subWrapper__title"}>volume</span>
                     <Slider
                         max={100}
                         min={0}
@@ -446,6 +456,7 @@ class App extends React.Component {
                         {this.renderSettingsIcon()}
                     </section>
                     {this.renderSettings()}
+                    {this.renderShare()}
                 </div>
             )
         } else {
