@@ -54,7 +54,7 @@ class App extends React.Component {
             audioObject: null,
             currentTrack: 0,
             volume: 100,
-            settings: false,
+            mode: 'normal',
             bass: 100
         };
         this.titleRef = React.createRef();
@@ -137,10 +137,32 @@ class App extends React.Component {
         this.playNext = this.playNext.bind(this);
         this.setAudioType = this.setAudioType.bind(this);
         this.showSettings = this.showSettings.bind(this);
+        this.showShare = this.showShare.bind(this);
+        this.showInfo = this.showInfo.bind(this);
     }
 
     showSettings() {
-        this.setState({settings: !this.state.settings})
+        if (this.state.mode === 'settings') {
+            this.setState({mode: 'normal'})
+        } else {
+            this.setState({mode: 'settings'})
+        }
+    }
+
+    showShare() {
+        if (this.state.mode === 'share') {
+            this.setState({mode: 'normal'})
+        } else {
+            this.setState({mode: 'share'})
+        }
+    }
+
+    showInfo() {
+        if (this.state.mode === 'info') {
+            this.setState({mode: 'normal'})
+        } else {
+            this.setState({mode: 'info'})
+        }
     }
 
     handleButtonClick() {
@@ -268,7 +290,7 @@ class App extends React.Component {
         this.initAudio('typeChange');
     }
     renderSettings() {
-        if (this.state.settings) {
+        if (this.state.mode === 'settings') {
             return (
                 <div className={"settings"}>
                     {this.renderVolControl()}
@@ -292,21 +314,22 @@ class App extends React.Component {
     }
 
     renderSettingsIcon() {
-        if (this.state.settings) {
-            return (
-                <span className={"menuIcon material-icons md-36"} onClick={this.showSettings} >close</span>
-            );
-        }
-        return (<span className={"menuIcon material-icons md-36"} onClick={this.showSettings}>touch_app</span>);
+        return (
+            <>
+                <span className={"ccIcon material-icons md-24 buttonIcon buttonIcon_small " + (this.state.mode === 'info' ? 'active' : '')} onClick={this.showInfo} >{(this.state.mode === 'info' ? 'close': 'info')}</span>
+                <span className={"settingsIcon material-icons md-24 buttonIcon buttonIcon_small " + (this.state.mode === 'settings' ? 'active' : '')} onClick={this.showSettings} >{(this.state.mode === 'settings' ? 'close': 'settings')}</span>
+                <span className={"shareIcon material-icons md-24 buttonIcon buttonIcon_small " + (this.state.mode === 'share' ? 'active' : '')} onClick={this.showShare} >{(this.state.mode === 'share' ? 'close': 'share')}</span>
+            </>
+        );
     }
 
     renderButton() {
         if (this.audio && !this.audio.paused) {
             return (
-                <span className="pauseButton material-icons md-48" onClick={this.handleButtonClick}>pause</span>
+                <span className={"pauseButton material-icons md-36 buttonIcon"} onClick={this.handleButtonClick}>pause</span>
             );
         }
-        return(<span className="playButton inactive material-icons md-48" onClick={this.handleButtonClick}>play_arrow</span>);
+        return(<span className={"playButton inactive material-icons active md-36 buttonIcon"} onClick={this.handleButtonClick}>play_arrow</span>);
     }
 
     renderVisualizer() {
@@ -316,7 +339,7 @@ class App extends React.Component {
     }
 
     renderImage() {
-        if (!this.state.settings) {
+        if (this.state.mode === 'normal') {
             return (<img className={"trackImage"} src={this.image} alt={"logo"} />);
         }
         return false;
@@ -384,10 +407,10 @@ class App extends React.Component {
                         <CircularProgress strokeWidth={10} stroke="#dff8d0"/>
                     </CircularInput>
                     <section className={'playerMenu'}>
-                        <span className={"switcher next material-icons md-36"} onClick={this.initAudio.bind(this, 'next')}>
+                        <span className={"switcher next material-icons md-36 buttonIcon"} onClick={this.initAudio.bind(this, 'next')}>
                             arrow_forward_ios
                         </span>
-                            <span className={"switcher prev material-icons md-36"} onClick={this.initAudio.bind(this, 'prev')}>
+                            <span className={"switcher prev material-icons md-36 buttonIcon"} onClick={this.initAudio.bind(this, 'prev')}>
                             arrow_back_ios
                         </span>
                         {this.renderButton()}

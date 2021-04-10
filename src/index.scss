@@ -24,7 +24,6 @@ body {
 .App {
   width: 100%;
   height: 100%;
-  position: relative;
   &:before {
     width: 100%;
     height: 100%;
@@ -40,11 +39,51 @@ body {
   }
 }
 
-* { padding:0; margin:0;}
+* {
+  padding:0; margin:0;
+}
 html, body {
   height:100%;
   overflow: hidden;
   background-color: var(--black);
+}
+
+.buttonIcon {
+  width: 50px;
+  height: 50px;
+  padding: 5px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  border: 2px solid #316851;
+  cursor: pointer;
+  background: #071820;
+  opacity: 0.2;
+  transition: opacity 0.2s;
+  box-shadow: 2px 2px 2px #071820;
+  &_small {
+    width: 38px;
+    height: 38px;
+  }
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url("./image/bubble.png");
+    background-size: cover;
+  }
+  &:active{
+    margin-top: 1px;
+    opacity: 0.8;
+    box-shadow: 0px 0px 2px #071820;
+  }
+  &.active {
+    background: #dff8d0;
+    color: #071820;
+    opacity: 1;
+  }
 }
 .visualiser-element,
 .boy-element {
@@ -177,26 +216,6 @@ html, body {
   opacity: 0;
 }
 
-.menuIcon{
-  position: fixed;
-  top: calc(50% - 130px);
-  left: 50%;
-  transform: translate(-50%, -50%);
-  -webkit-transform: translate(-50%, -50%);
-  -moz-transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  -o-transform: translate(-50%, -50%);
-  cursor: pointer;
-  padding: 6px;
-  text-shadow: 3px 1px 2px #071820 ;
-  transition: color 0.2s, opacity 0.2s;
-  opacity: 0.2;
-  &:hover{
-    opacity: 1;
-    color: #86c06c;
-  }
-}
-
 .settings{
   position: fixed;
   top: 50%;
@@ -211,7 +230,7 @@ html, body {
   height: 240px;
   overflow: hidden;
   box-sizing: border-box;
-  padding-top: 20px;
+  padding-top: 30px;
   z-index: 1;
   &__title {
     color: #dff8d0;
@@ -395,10 +414,19 @@ html, body {
   -moz-transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
   -o-transform: translate(-50%, -50%);
+  &:hover{
+    .buttonIcon {
+      opacity: 0.8;
+      &:hover,
+      &:active{
+        opacity: 1;
+      }
+    }
+  }
 }
 .playerMenu {
   position: absolute;
-  bottom: 4px;
+  bottom: 14px;
   left: 50%;
   width: 78px;
   height: 50px;
@@ -407,25 +435,18 @@ html, body {
   -moz-transform: translateX(-50%);
   -ms-transform: translateX(-50%);
   -o-transform: translateX(-50%);
-  transition: opacity 0.3s;
-  opacity: 0.3;
   z-index: 2;
-  &:hover {
-    opacity: 0.9;
-  }
 }
 .pauseButton,
 .playButton {
   position: absolute;
-  bottom: 0;
-  top: auto;
+  top: 0;
   left: 50%;
   color: #86c06c;
   -webkit-transform: translateX(-50%);
   -moz-transform: translateX(-50%);
   -ms-transform: translateX(-50%);
   -o-transform: translateX(-50%);
-  text-shadow: 3px 1px 2px #071820 ;
   border-radius: 50%;
   border: 2px solid #316851;
   background: #071820;
@@ -449,42 +470,59 @@ html, body {
   position: absolute;
   vertical-align: middle;
   //text-shadow: 3px 1px 2px #071820 ;
-  transition: all 0.2s;
   text-align: center;
-  width: 50px;
-  height: 50px;
   display: block;
   box-sizing: border-box;
   padding: 5px 11px;
   letter-spacing: 3px;
-  border-radius: 50%;
-  border: 2px solid #316851;
-  cursor: pointer;
-  background: #071820;
-  &:after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: url("./image/bubble.png");
-    background-size: cover;
-  }
   &.prev {
     left: -44px;
-    top: -20px;
+    top: -15px;
   }
   &.next {
     padding-left: 6px;
-    top: -20px;
+    top: -15px;
     right: -44px;
+
   }
+
   &:hover{
   }
 }
-.subMenu {
 
+
+.subMenu {
+  position: fixed;
+  top: calc(50% - 146px);
+  left: 50%;
+  width: 50px;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+}
+
+.settingsIcon {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+}
+
+.ccIcon {
+  position: absolute;
+  top: 11px;
+  left: -44px;
+}
+.shareIcon {
+  position: absolute;
+  top: 11px;
+  right: -44px;
 }
 
 @media screen and (max-width: 600px)  {
