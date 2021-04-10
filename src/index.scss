@@ -80,14 +80,10 @@ html, body {
     box-shadow: 0px 0px 2px #071820;
   }
   &.active {
-    background: #dff8d0;
-    color: #071820;
     opacity: 1;
   }
   &.loading {
     animation: rotateButton 2s linear infinite;
-    background: #071820;
-    color: #86c06c;
   }
 }
 .visualiser-element,
