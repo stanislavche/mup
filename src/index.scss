@@ -84,6 +84,11 @@ html, body {
     color: #071820;
     opacity: 1;
   }
+  &.loading {
+    animation: rotateButton 2s linear infinite;
+    background: #071820;
+    color: #86c06c;
+  }
 }
 .visualiser-element,
 .boy-element {
@@ -371,6 +376,24 @@ html, body {
   }
 }
 
+
+@keyframes rotateButton {
+  0% {
+    transform: rotate(0);
+    -webkit-transform: rotate(0);
+    -moz-transform: rotate(0);
+    -ms-transform: rotate(0);
+    -o-transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+  }
+}
+
 @for $i from 0 through 29 {
   .char-#{$i} {
     transform: rotateZ(#{(360 / 29 * $i)}deg) translate3d(0px, 0px, 0px);
@@ -442,11 +465,8 @@ html, body {
   position: absolute;
   top: 0;
   left: 50%;
+  margin-left: -25px;
   color: #86c06c;
-  -webkit-transform: translateX(-50%);
-  -moz-transform: translateX(-50%);
-  -ms-transform: translateX(-50%);
-  -o-transform: translateX(-50%);
   border-radius: 50%;
   border: 2px solid #316851;
   background: #071820;

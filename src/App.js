@@ -55,10 +55,12 @@ class App extends React.Component {
             currentTrack: 0,
             volume: 100,
             mode: 'normal',
-            bass: 100
+            bass: 50,
+            treble: 50
         };
         this.titleRef = React.createRef();
         this.playTime = 0;
+        this.isAudioLoading = false;
         this.audio = new Audio();
         // this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
         // this.audioContextSync = false;
@@ -70,6 +72,7 @@ class App extends React.Component {
         this.setVolume = this.setVolume.bind(this);
         this.setTrackPosition = this.setTrackPosition.bind(this);
         this.setBass = this.setBass.bind(this);
+        this.setTreble = this.setTreble.bind(this);
 
         this.albumArray = [{
             post: track1,
@@ -166,6 +169,9 @@ class App extends React.Component {
     }
 
     handleButtonClick() {
+        if (this.isAudioLoading) {
+            return false;
+        }
         if (!this.audio.paused) {
             this.audio.pause();
             this.clearProgressInterval();
@@ -197,6 +203,14 @@ class App extends React.Component {
         }
     }
 
+    setTreble(trebleVol) {
+        if(trebleVol) {
+            this.setState({bass: trebleVol});
+        } else {
+            console.log(trebleVol);
+        }
+    }
+
     setProgressTime() {
         this.playTime = +((100 / (this.audio.duration / this.audio.currentTime))/100).toFixed(3);
         this.setState({playTime: this.playTime});
@@ -220,6 +234,7 @@ class App extends React.Component {
     }
 
     initAudio(type) {
+        this.isAudioLoading = true;
         const curTrack = this.state.currentTrack;
         let nextTrack = this.state.currentTrack;
         if(type && type === 'next') {
@@ -262,6 +277,7 @@ class App extends React.Component {
         this.startProgressInteraval();
         this.audio.currentTime = this.currentTime;
         this.currentTime = 0;
+        this.isAudioLoading = false;
         this.audio.play();
         this.audio.addEventListener("ended", this.playNext);
     }
@@ -302,6 +318,14 @@ class App extends React.Component {
                         value={this.state.bass}
                         orientation="horizontal"
                         onChange={this.setBass} />
+                    <span className={"settings__title"}>treble</span>
+                    <Slider
+                        max={100}
+                        min={0}
+                        tooltip={false}
+                        value={this.state.treble}
+                        orientation="horizontal"
+                        onChange={this.setTreble} />
                     <span className={"settings__title"}>mastering</span>
                     <span className={this.audioType === 'post' ? 'switcherHeader active' : 'switcherHeader'} onClick={this.setAudioType}>
                             OFF {this.renderAudioTypeButton()} ON.
@@ -329,7 +353,10 @@ class App extends React.Component {
                 <span className={"pauseButton material-icons md-36 buttonIcon"} onClick={this.handleButtonClick}>pause</span>
             );
         }
-        return(<span className={"playButton inactive material-icons active md-36 buttonIcon"} onClick={this.handleButtonClick}>play_arrow</span>);
+        return(
+        <span
+                className={"playButton inactive material-icons active md-36 buttonIcon " + (this.isAudioLoading ? 'loading' : '')}
+                onClick={this.handleButtonClick}>{this.isAudioLoading ? 'autorenew' : 'play_arrow'}</span>);
     }
 
     renderVisualizer() {
