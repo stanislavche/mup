@@ -75,52 +75,52 @@ class App extends React.Component {
             post: track1,
             org: track1Raw,
             img: img1,
-            title: 'S_TN *** SERENITY ***'
+            title: 'S_TN * SERENITY **************'
         },{
             post: track2,
             org: track2Raw,
             img: img6,
-            title: 'S_TN *** HOLY ROCKET ***'
+            title: 'S_TN * HOLY ROCKET ***********'
         },{
             post: track3,
             org: track3Raw,
             img: boy,
-            title: 'S_TN *** PROMISE ***'
+            title: 'S_TN * PROMISE ***************'
         },{
             post: track4,
             org: track4Raw,
             img: img4,
-            title: 'S_TN *** SPACE TIME ***',
+            title: 'S_TN * SPACE TIME ***********'
         },{
             post: track5,
             org: track5Raw,
             img: img5,
-            title: 'S_TN *** POPCORN ***'
+            title: 'S_TN * POPCORN **************'
         },{
             post: track6,
             org: track6Raw,
             img: img6,
-            title: 'S_TN *** GOAL ACHIEVEMENT ***'
+            title: 'S_TN * GOAL ACHIEVEMENT *****'
         },{
             post: track7,
             org: track7Raw,
             img: img7,
-            title: 'S_TN *** CRYOGENIC DREAM ***'
+            title: 'S_TN * CRYOGENIC DREAM ******'
         },{
             post: track8,
             org: track8Raw,
             img: img3,
-            title: 'S_TN *** STARWAY ***'
+            title: 'S_TN * STARWAY **************'
         },{
             post: track9,
             org: track9Raw,
             img: boy,
-            title: 'S_TN feat BALLONBEAR *** IMPETUS ***'
+            title: 'S_TN & BALLONBEAR * IMPETUS *'
         },{
             post: track10,
             org: track10Raw,
             img: img8,
-            title: 'S_TN *** RAILROAD SWITCH ***'
+            title: 'S_TN * RAILROAD SWITCH ******'
         }];
         this.image = this.albumArray[0].img;
         this.title = this.albumArray[0].title;
@@ -361,10 +361,10 @@ class App extends React.Component {
             let x = (Math.PI/text.length).toFixed(0) * (i);
             let y = (Math.PI/text.length).toFixed(0) * (i);
             const divStyle = {
-                transform: 'rotateZ('+r+'deg) translate3d('+x+'px,'+y+'px,0)',
-                webkitTransform: 'rotateZ('+r+'deg) translate3d('+x+'px,'+y+'px,0)'
+                WebkitTransform: 'rotateZ('+r+'deg) translate3d('+x+'px,'+y+'px,0)',
+                transform: 'rotateZ('+r+'deg) translate3d('+x+'px,'+y+'px,0)'
             };
-            characters.push(<span style={divStyle}>{text[i]}</span>);
+            characters.push(<span key={'char-' + i} style={divStyle}>{text[i]}</span>);
         }
         return characters;
     }
