@@ -293,7 +293,9 @@ class App extends React.Component {
 
     renderSettingsIcon() {
         if (this.state.settings) {
-            return (<span className={"menuIcon material-icons md-36"} onClick={this.showSettings} >close</span>);
+            return (
+                <span className={"menuIcon material-icons md-36"} onClick={this.showSettings} >close</span>
+            );
         }
         return (<span className={"menuIcon material-icons md-36"} onClick={this.showSettings}>touch_app</span>);
     }
@@ -301,14 +303,14 @@ class App extends React.Component {
     renderButton() {
         if (this.audio && !this.audio.paused) {
             return (
-                <span className="startButton material-icons md-48" onClick={this.handleButtonClick}>pause</span>
+                <span className="pauseButton material-icons md-48" onClick={this.handleButtonClick}>pause</span>
             );
         }
-        return(<span className="startButton inactive material-icons md-48" onClick={this.handleButtonClick}>play_arrow</span>);
+        return(<span className="playButton inactive material-icons md-48" onClick={this.handleButtonClick}>play_arrow</span>);
     }
 
     renderVisualizer() {
-        if (!this.isIOS && !this.isAndroid && !this.isConsole) {
+        if (!this.isIOS && !this.isAndroid && !this.isConsole && false) {
             return(<Visualiser startAnimation={this.state.play} audio={this.state.audioObject}/>);
         }
     }
@@ -347,6 +349,12 @@ class App extends React.Component {
         return(<span className="audioSwitcher material-icons md-48">toggle_on</span>);
     }
 
+    renderSpace(flag) {
+        if (flag) {
+            return (<Space />);
+        }
+    }
+
     initAudioApi() {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         var gainNode = audioContext.createGain();
@@ -364,7 +372,7 @@ class App extends React.Component {
                 WebkitTransform: 'rotateZ('+r+'deg) translate3d('+x+'px,'+y+'px,0)',
                 transform: 'rotateZ('+r+'deg) translate3d('+x+'px,'+y+'px,0)'
             };
-            characters.push(<span key={'char-' + i} style={divStyle}>{text[i]}</span>);
+            characters.push(<span key={'char-' + i} className={'char char-' + i}>{text[i]}</span>);
         }
         return characters;
     }
@@ -372,7 +380,7 @@ class App extends React.Component {
     renderScene() {
         if (this.state.play) {
             return (
-                <>
+                <div className={'playerWrapper'}>
                     {this.renderVisualizer()}
                     <div className={"imageWrapper"}>
                         {this.renderImage()}
@@ -382,22 +390,26 @@ class App extends React.Component {
                         <CircularTrack strokeWidth={4} stroke="#86c06c"/>
                         <CircularProgress strokeWidth={10} stroke="#dff8d0"/>
                     </CircularInput>
-                    {this.renderButton()}
-                    <span className={"switcher next material-icons md-48"} onClick={this.initAudio.bind(this, 'next')}>
-                        arrow_forward_ios
-                    </span>
-                    <span className={"switcher prev material-icons md-48"} onClick={this.initAudio.bind(this, 'prev')}>
-                        arrow_back_ios
-                    </span>
-                    {this.renderSettingsIcon()}
+                    <section className={'playerMenu'}>
+                        <span className={"switcher next material-icons md-36"} onClick={this.initAudio.bind(this, 'next')}>
+                            arrow_forward_ios
+                        </span>
+                            <span className={"switcher prev material-icons md-36"} onClick={this.initAudio.bind(this, 'prev')}>
+                            arrow_back_ios
+                        </span>
+                        {this.renderButton()}
+                    </section>
+                    <section className={'subMenu'}>
+                        {this.renderSettingsIcon()}
+                    </section>
                     {this.renderSettings()}
-                </>
+                </div>
             )
         } else {
             return (
                 <>
                     <img className={"mainLogo"} src={img9} alt={"logo"} />
-                    {this.renderButton()}
+                    <span className="startButton inactive material-icons" onClick={this.handleButtonClick}>play_arrow</span>
                     <span className={"material-icons hidden-text"}>arrow_forward_ios</span>
                 </>
             );
@@ -407,7 +419,7 @@ class App extends React.Component {
     render() {
         return(
             <div className="App" >
-                <Space />
+                {this.renderSpace(false)}
                 {this.renderScene()}
             </div>
         )
