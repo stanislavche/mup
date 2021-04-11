@@ -791,8 +791,6 @@ html, body {
   }
   &__link{
     color: #dff8d0 !important;
-    text-decoration: none !important;
-    font-weight: 700;
     font-size: 14px;
     display: inline-block;
     transition: all 0.1s;
@@ -804,6 +802,8 @@ html, body {
     }
     &_stn{
       float: right;
+      text-decoration: none !important;
+      font-weight: 700;
       &:hover{
         transform: scale(1.2);
       }

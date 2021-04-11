@@ -352,7 +352,7 @@ class App extends React.Component {
             return (
                 <span
                     onClick={this.resetFilters}
-                    className={'reset-filters active material-icons md-18 buttonIcon buttonIcon_extrasmall'}>
+                    className={'reset-filters active material-icons notranslate  md-18 buttonIcon buttonIcon_extrasmall'}>
                     close
                 </span>
             );
@@ -389,9 +389,9 @@ class App extends React.Component {
     renderSettingsIcon() {
         return (
             <>
-                <span className={"ccIcon material-icons md-24 buttonIcon buttonIcon_small " + (this.state.mode === 'info' ? 'active' : '')} onClick={this.showInfo} >{(this.state.mode === 'info' ? 'close': 'info')}</span>
-                <span className={"settingsIcon material-icons md-24 buttonIcon buttonIcon_small " + (this.state.mode === 'settings' ? 'active' : '')} onClick={this.showSettings} >{(this.state.mode === 'settings' ? 'close': 'settings')}</span>
-                <span className={"shareIcon material-icons md-24 buttonIcon buttonIcon_small " + (this.state.mode === 'share' ? 'active' : '')} onClick={this.showShare} >{(this.state.mode === 'share' ? 'close': 'share')}</span>
+                <span className={"ccIcon material-icons notranslate  md-24 buttonIcon buttonIcon_small " + (this.state.mode === 'info' ? 'active' : '')} onClick={this.showInfo} >{(this.state.mode === 'info' ? 'close': 'info')}</span>
+                <span className={"settingsIcon material-icons notranslate  md-24 buttonIcon buttonIcon_small " + (this.state.mode === 'settings' ? 'active' : '')} onClick={this.showSettings} >{(this.state.mode === 'settings' ? 'close': 'settings')}</span>
+                <span className={"shareIcon material-icons notranslate  md-24 buttonIcon buttonIcon_small " + (this.state.mode === 'share' ? 'active' : '')} onClick={this.showShare} >{(this.state.mode === 'share' ? 'close': 'share')}</span>
             </>
         );
     }
@@ -399,12 +399,12 @@ class App extends React.Component {
     renderButton() {
         if (this.audio && !this.audio.paused) {
             return (
-                <span className={"pauseButton material-icons md-36 buttonIcon"} onClick={this.handleButtonClick}>pause</span>
+                <span className={"pauseButton material-icons notranslate  md-36 buttonIcon"} onClick={this.handleButtonClick}>pause</span>
             );
         }
         return(
         <span
-                className={"playButton material-icons active md-36 buttonIcon " + (this.isAudioLoading ? 'loading' : '')}
+                className={"playButton material-icons notranslate  active md-36 buttonIcon " + (this.isAudioLoading ? 'loading' : '')}
                 onClick={this.handleButtonClick}>{this.isAudioLoading ? 'autorenew' : 'play_arrow'}
         </span>);
     }
@@ -477,19 +477,19 @@ class App extends React.Component {
     renderAudioTypeButton() {
         if (this.audioType === 'org') {
             return (
-                <span className="audioSwitcher material-icons md-36">toggle_off</span>
+                <span className="audioSwitcher material-icons notranslate  md-36">toggle_off</span>
             );
         }
-        return(<span className="audioSwitcher material-icons md-36">toggle_on</span>);
+        return(<span className="audioSwitcher material-icons notranslate  md-36">toggle_on</span>);
     }
 
     renderVisualButton() {
         if (this.state.visual === 'space') {
             return (
-                <span className="audioSwitcher material-icons md-36">toggle_off</span>
+                <span className="audioSwitcher material-icons notranslate  md-36">toggle_off</span>
             );
         }
-        return(<span className="audioSwitcher material-icons md-36">toggle_on</span>);
+        return(<span className="audioSwitcher material-icons notranslate  md-36">toggle_on</span>);
     }
 
     renderSpace() {
@@ -532,7 +532,7 @@ class App extends React.Component {
             characters.push(<span key={'char-' + i} className={'char char-' + i}>{text[i]}</span>);
         }
         return characters;
-    }
+    }info__link
 
     renderScene() {
         if (this.state.play) {
@@ -550,10 +550,10 @@ class App extends React.Component {
                             <CircularProgress strokeWidth={10} stroke="#dff8d0"/>
                         </CircularInput>
                         <section className={'playerMenu'}>
-                            <span className={"switcher next material-icons md-36 buttonIcon"} onClick={this.initAudio.bind(this, 'next')}>
+                            <span className={"switcher next material-icons notranslate  md-36 buttonIcon"} onClick={this.initAudio.bind(this, 'next')}>
                                 arrow_forward_ios
                             </span>
-                                <span className={"switcher prev material-icons md-36 buttonIcon"} onClick={this.initAudio.bind(this, 'prev')}>
+                                <span className={"switcher prev material-icons notranslate  md-36 buttonIcon"} onClick={this.initAudio.bind(this, 'prev')}>
                                 arrow_back_ios
                             </span>
                             {this.renderButton()}
@@ -571,8 +571,8 @@ class App extends React.Component {
             return (
                 <>
                     <img className={"mainLogo"} src={img9} alt={"logo"} />
-                    <span className="startButton inactive material-icons" onClick={this.handleButtonClick}>play_arrow</span>
-                    <span className={"material-icons hidden-text"}>arrow_forward_ios</span>
+                    <span className="startButton inactive material-icons notranslate " onClick={this.handleButtonClick}>play_arrow</span>
+                    <span className={"material-icons notranslate  hidden-text"}>arrow_forward_ios</span>
                 </>
             );
         }
