@@ -41,8 +41,9 @@ import img8 from "./image/rail.gif";
 import img9 from "./image/mup-transparent.gif";
 import boy from './image/boy.gif';
 
-import Slider from '@appigram/react-rangeslider'
+import Slider from '@appigram/react-rangeslider';
 import Share from "./components/Share";
+import Description from "./components/Description";
 const cUserAgent = navigator.userAgent.toLowerCase();
 
 
@@ -346,6 +347,17 @@ class App extends React.Component {
         }
         return false;
     }
+    renderInfo() {
+        if (this.state.mode === 'info') {
+            return (
+                <div className={"info subWrapper"}>
+                    <span className={"subWrapper__title"}>MUP</span>
+                    <Description />
+                </div>
+            );
+        }
+        return false;
+    }
 
     renderSettingsIcon() {
         return (
@@ -457,6 +469,7 @@ class App extends React.Component {
                     </section>
                     {this.renderSettings()}
                     {this.renderShare()}
+                    {this.renderInfo()}
                 </div>
             )
         } else {
