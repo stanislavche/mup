@@ -839,6 +839,7 @@ html, body {
     font-size: 14px;
     border-radius: 4px;
     animation: buyLink 1s linear infinite;
+    box-sizing: border-box;
   }
   &__description {
     color: #dff8d0;
