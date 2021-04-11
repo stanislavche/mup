@@ -54,20 +54,22 @@ class App extends React.Component {
             play: false,
             audioObject: null,
             currentTrack: 0,
-            volume: 100,
+            volume: 80,
             mode: 'normal',
-            bass: 50,
-            treble: 50
+            bass: 20,
+            treble: 20
         };
-        this.titleRef = React.createRef();
+        this.volumeRef = React.createRef();
+        this.bassRef = React.createRef();
+        this.trebleRef = React.createRef();
         this.playTime = 0;
         this.isAudioLoading = false;
         this.audio = new Audio();
-        // this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        // this.audioContextSync = false;
-        // this.gainNode = this.audioContext.createGain();
-        // this.bassFilter = this.audioContext.createBiquadFilter();
-
+        this.audioContext = null;
+        this.audioContextSync = false;
+        this.gainNode = null;
+        this.bassFilter = null;
+        this.trebleFilter = null;
 
         this.handleButtonClick = this.handleButtonClick.bind(this);
         this.setVolume = this.setVolume.bind(this);
@@ -143,6 +145,7 @@ class App extends React.Component {
         this.showSettings = this.showSettings.bind(this);
         this.showShare = this.showShare.bind(this);
         this.showInfo = this.showInfo.bind(this);
+        this.resetFilters = this.resetFilters.bind(this);
     }
 
     showSettings() {
@@ -187,28 +190,36 @@ class App extends React.Component {
         this.setState({play: true});
     }
 
-    setVolume(volume) {
-        if(volume) {
-            this.setState({volume: volume});
-            this.audio.volume = volume/100;
+    setVolume(event) {
+        console.log('setVolume');
+        if(event) {
+            const value = event.target.value;
+            this.setState({'volume': +value});
+            this.gainNode.gain.value = value/100;
         } else {
-            this.audio.volume = this.state.volume/100;
+            this.gainNode.gain.value = this.state.volume/100;
         }
     }
 
-    setBass(bassVol) {
-        if(bassVol) {
-            this.setState({bass: bassVol});
+    setBass(event , value) {
+        console.log('setBass');
+        if(event || value) {
+            const val = value || event.target.value;
+            this.setState({'bass': +val});
+            this.bassFilter.gain.value = val - 20;
         } else {
-            console.log(bassVol);
+            this.bassFilter.gain.value = this.state.bass - 20;
         }
     }
 
-    setTreble(trebleVol) {
-        if(trebleVol) {
-            this.setState({bass: trebleVol});
+    setTreble(event , value) {
+        console.log('setTreble');
+        if(event || value) {
+            const val = value || event.target.value;
+            this.setState({'treble': +val});
+            this.trebleFilter.gain.value = val - 20;
         } else {
-            console.log(trebleVol);
+            this.trebleFilter.gain.value = this.state.treble - 20;
         }
     }
 
@@ -267,9 +278,10 @@ class App extends React.Component {
     }
 
     onLoadMedia() {
+        // Set EQ FILTERS
         if (!this.audioContextSync) {
             this.audioContextSync = true;
-
+            this.initAudioControls();
         }
 
         console.log('trigger event');
@@ -304,39 +316,46 @@ class App extends React.Component {
             this.audioType = 'org';
         }
         this.audio.pause();
+        this.resetFilters();
         this.initAudio('typeChange');
     }
     renderSettings() {
         if (this.state.mode === 'settings') {
             return (
                 <div className={"settings subWrapper"}>
-                    <span className={"subWrapper__title"}>mastering</span>
+
                     <span className={this.audioType === 'post' ? 'switcherHeader active' : 'switcherHeader'} onClick={this.setAudioType}>
-                        OFF {this.renderAudioTypeButton()} ON.
+                        ORIG GB {this.renderAudioTypeButton()} POST PR
                     </span>
                     {this.renderVolControl()}
-                    <span className={"subWrapper__title"}>bass</span>
-                    <Slider
-                        max={100}
-                        min={0}
-                        tooltip={false}
-                        value={this.state.bass}
-                        orientation="horizontal"
-                        onChange={this.setBass} />
-                    <span className={"subWrapper__title"}>treble</span>
-                    <Slider
-                        max={100}
-                        min={0}
-                        tooltip={false}
-                        value={this.state.treble}
-                        orientation="horizontal"
-                        onChange={this.setTreble} />
+                    <span className={"subWrapper__title"}>
+                        EQ
+                        {this.renderResetIcon()}
 
-
+                    </span>
+                    {this.renderBassControl()}
+                    {this.renderTrebleControl()}
                 </div>
             );
         }
         return false;
+    }
+    renderResetIcon() {
+        if(this.state.bass !== 20 || this.state.treble !== 20) {
+            return (
+                <span
+                    onClick={this.resetFilters}
+                    className={'reset-filters active material-icons md-18 buttonIcon buttonIcon_extrasmall'}>
+                    close
+                </span>
+            );
+        }
+        return false;
+    }
+
+    resetFilters() {
+        this.setBass(null, 20);
+        this.setTreble(null, 20);
     }
     renderShare() {
         if (this.state.mode === 'share') {
@@ -396,22 +415,54 @@ class App extends React.Component {
     }
 
     renderVolControl() {
-        if (!this.isIOS) {
-            return (
-                <>
-                    <span className={"subWrapper__title"}>volume</span>
-                    <Slider
-                        max={100}
-                        min={0}
-                        tooltip={false}
-                        value={this.state.volume}
-                        orientation="horizontal"
-                        onChange={this.setVolume} />
-                </>
-            )
-        }
-        return false;
+        return (
+            <>
+                <span className={"subWrapper__title"}>volume</span>
+                <input
+                    type="range"
+                    min={0}
+                    max={100}
+                    value={this.state.volume}
+                    className="subWrapper__slider"
+                    ref={this.volumeRef}
+                    onChange={event => this.setVolume(event)}
+                />
+            </>
+        )
     }
+
+    renderBassControl() {
+        return (
+            <>
+                <input
+                    type="range"
+                    min={0}
+                    max={40}
+                    value={this.state.bass}
+                    className="subWrapper__slider"
+                    ref={this.bassRef}
+                    onChange={event => this.setBass(event)}
+                />
+            </>
+        );
+    }
+
+    renderTrebleControl() {
+        return (
+            <>
+                <input
+                    type="range"
+                    min={0}
+                    max={40}
+                    value={this.state.treble}
+                    className="subWrapper__slider"
+                    ref={this.trebleRef}
+                    onChange={event => this.setTreble(event)}
+                />
+            </>
+        );
+    }
+
 
     renderAudioTypeButton() {
         if (this.audioType === 'org') {
@@ -428,10 +479,25 @@ class App extends React.Component {
         }
     }
 
-    initAudioApi() {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        var gainNode = audioContext.createGain();
-        gainNode.gain.value = 0.5;
+    initAudioControls() {
+        console.log('initAudio controls');
+        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const source = this.audioContext.createMediaElementSource(this.audio);
+
+        this.gainNode = this.audioContext.createGain();
+        this.bassFilter = this.audioContext.createBiquadFilter();
+        this.bassFilter.type = "lowshelf";
+        this.bassFilter.frequency.value = 200;
+        this.trebleFilter = this.audioContext.createBiquadFilter();
+        this.trebleFilter.type = "highshelf";
+        this.trebleFilter.frequency.value = 2000;
+        source.connect(this.bassFilter);
+        this.bassFilter.connect(this.trebleFilter);
+        this.trebleFilter.connect(this.gainNode);
+        this.gainNode.connect(this.audioContext.destination);
+        this.gainNode.gain.value = 1;
+        // this.trebleFilter.gain.value = 0;
+        // this.bassFilter.gain.value = 1541;
     }
 
     setTitle() {

@@ -90,6 +90,13 @@ class Visualiser extends React.Component {
         }
     }
 
+    resetFilters() {
+        this.setState({
+            bass: 20,
+            treble: 20
+        });
+    }
+
     updateVisualization(newTime) {
         if (this.stop) {
             return;
