@@ -259,6 +259,25 @@ html, body {
   &__title {
     color: #dff8d0;
   }
+  &__f-container{
+    display: block;
+    position: relative;
+    text-align: justify;
+    line-height: 26px;
+    vertical-align: middle;
+    .subWrapper__slider {
+      float: right;
+      width: 189px;
+      display: inline-block;
+      margin-top: 15px;
+    }
+  }
+  &__f-title{
+    display: inline-block;
+    color: #dff8d0;
+    font-size: 14px;
+  }
+
   &__slider {
     -webkit-appearance: none;
     width: 100%;
@@ -282,8 +301,11 @@ html, body {
       width: 25px;
       height: 25px;
       border-radius: 50%;
-      background: #4CAF50;
+      background: #dff8d0;
       cursor: pointer;
+    }
+    &:hover {
+      opacity: 1;
     }
   }
 }

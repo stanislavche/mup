@@ -54,7 +54,7 @@ class App extends React.Component {
             play: false,
             audioObject: null,
             currentTrack: 0,
-            volume: 80,
+            volume: 100,
             mode: 'normal',
             bass: 20,
             treble: 20
@@ -266,6 +266,11 @@ class App extends React.Component {
         if (type === "typeChange") {
             this.currentTime = this.audio.currentTime;
         }
+        // Set EQ FILTERS
+        if (!this.audioContextSync) {
+            this.audioContextSync = true;
+            this.initAudioControls();
+        }
         this.audio.removeEventListener("ended", this.playNext);
         this.setState({currentTrack: nextTrack});
         this.audio.src = this.albumArray[nextTrack][this.audioType];
@@ -278,12 +283,6 @@ class App extends React.Component {
     }
 
     onLoadMedia() {
-        // Set EQ FILTERS
-        if (!this.audioContextSync) {
-            this.audioContextSync = true;
-            this.initAudioControls();
-        }
-
         console.log('trigger event');
         this.audio.removeEventListener("loadeddata", this.onLoadMedia);
         this.setVolume();
@@ -323,18 +322,18 @@ class App extends React.Component {
         if (this.state.mode === 'settings') {
             return (
                 <div className={"settings subWrapper"}>
-
+                    <span className={"subWrapper__title"}>SOUND</span>
                     <span className={this.audioType === 'post' ? 'switcherHeader active' : 'switcherHeader'} onClick={this.setAudioType}>
-                        ORIG GB {this.renderAudioTypeButton()} POST PR
+                        ORIG {this.renderAudioTypeButton()} POST
                     </span>
                     {this.renderVolControl()}
                     <span className={"subWrapper__title"}>
                         EQ
                         {this.renderResetIcon()}
-
                     </span>
-                    {this.renderBassControl()}
+
                     {this.renderTrebleControl()}
+                    {this.renderBassControl()}
                 </div>
             );
         }
@@ -416,8 +415,8 @@ class App extends React.Component {
 
     renderVolControl() {
         return (
-            <>
-                <span className={"subWrapper__title"}>volume</span>
+            <div className={'subWrapper__f-container'}>
+                <span className={'subWrapper__f-title'}>vol</span>
                 <input
                     type="range"
                     min={0}
@@ -427,13 +426,14 @@ class App extends React.Component {
                     ref={this.volumeRef}
                     onChange={event => this.setVolume(event)}
                 />
-            </>
+            </div>
         )
     }
 
     renderBassControl() {
         return (
-            <>
+            <div className={'subWrapper__f-container'}>
+                <span className={'subWrapper__f-title'}>low</span>
                 <input
                     type="range"
                     min={0}
@@ -443,13 +443,14 @@ class App extends React.Component {
                     ref={this.bassRef}
                     onChange={event => this.setBass(event)}
                 />
-            </>
+            </div>
         );
     }
 
     renderTrebleControl() {
         return (
-            <>
+            <div className={'subWrapper__f-container'}>
+                <span className={'subWrapper__f-title'}>hi</span>
                 <input
                     type="range"
                     min={0}
@@ -459,7 +460,7 @@ class App extends React.Component {
                     ref={this.trebleRef}
                     onChange={event => this.setTreble(event)}
                 />
-            </>
+            </div>
         );
     }
 
