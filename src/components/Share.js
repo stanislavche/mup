@@ -43,7 +43,7 @@ import {
     WeiboIcon,
     HatenaIcon,
 } from "react-share";
-import exampleImage from '../image/mup.gif';
+import exampleImage from '../image/SEO.png';
 
 class Share  extends React.Component {
     render() {
