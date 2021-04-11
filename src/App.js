@@ -396,8 +396,9 @@ class App extends React.Component {
         }
         return(
         <span
-                className={"playButton inactive material-icons active md-36 buttonIcon " + (this.isAudioLoading ? 'loading' : '')}
-                onClick={this.handleButtonClick}>{this.isAudioLoading ? 'autorenew' : 'play_arrow'}</span>);
+                className={"playButton material-icons active md-36 buttonIcon " + (this.isAudioLoading ? 'loading' : '')}
+                onClick={this.handleButtonClick}>{this.isAudioLoading ? 'autorenew' : 'play_arrow'}
+        </span>);
     }
 
     renderVisualizer(flag) {
