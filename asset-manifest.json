@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/mup/static/css/main.d8c16eac.chunk.css",
-    "main.js": "/mup/static/js/main.61780657.chunk.js",
-    "main.js.map": "/mup/static/js/main.61780657.chunk.js.map",
+    "main.css": "/mup/static/css/main.4ae982fe.chunk.css",
+    "main.js": "/mup/static/js/main.a7bc30ae.chunk.js",
+    "main.js.map": "/mup/static/js/main.a7bc30ae.chunk.js.map",
     "runtime-main.js": "/mup/static/js/runtime-main.827d3b5d.js",
     "runtime-main.js.map": "/mup/static/js/runtime-main.827d3b5d.js.map",
     "static/css/2.df3e7b99.chunk.css": "/mup/static/css/2.df3e7b99.chunk.css",
-    "static/js/2.dbfe4df0.chunk.js": "/mup/static/js/2.dbfe4df0.chunk.js",
-    "static/js/2.dbfe4df0.chunk.js.map": "/mup/static/js/2.dbfe4df0.chunk.js.map",
+    "static/js/2.0b1df537.chunk.js": "/mup/static/js/2.0b1df537.chunk.js",
+    "static/js/2.0b1df537.chunk.js.map": "/mup/static/js/2.0b1df537.chunk.js.map",
     "index.html": "/mup/index.html",
     "static/css/2.df3e7b99.chunk.css.map": "/mup/static/css/2.df3e7b99.chunk.css.map",
-    "static/css/main.d8c16eac.chunk.css.map": "/mup/static/css/main.d8c16eac.chunk.css.map",
-    "static/js/2.dbfe4df0.chunk.js.LICENSE.txt": "/mup/static/js/2.dbfe4df0.chunk.js.LICENSE.txt",
+    "static/css/main.4ae982fe.chunk.css.map": "/mup/static/css/main.4ae982fe.chunk.css.map",
+    "static/js/2.0b1df537.chunk.js.LICENSE.txt": "/mup/static/js/2.0b1df537.chunk.js.LICENSE.txt",
     "static/media/1 raw.1997e876.mp3": "/mup/static/media/1 raw.1997e876.mp3",
     "static/media/1.c25c04ac.mp3": "/mup/static/media/1.c25c04ac.mp3",
     "static/media/10 raw.543e669a.mp3": "/mup/static/media/10 raw.543e669a.mp3",
@@ -37,6 +37,7 @@
     "static/media/boy.1ef3b20a.gif": "/mup/static/media/boy.1ef3b20a.gif",
     "static/media/dream.58a4d582.gif": "/mup/static/media/dream.58a4d582.gif",
     "static/media/mup-transparent.39296262.gif": "/mup/static/media/mup-transparent.39296262.gif",
+    "static/media/mup.ffe68dc1.gif": "/mup/static/media/mup.ffe68dc1.gif",
     "static/media/popcorn.7b06dbf9.gif": "/mup/static/media/popcorn.7b06dbf9.gif",
     "static/media/promise.2a6fd70b.gif": "/mup/static/media/promise.2a6fd70b.gif",
     "static/media/rocket.01b8951e.gif": "/mup/static/media/rocket.01b8951e.gif",
@@ -45,8 +46,8 @@
   "entrypoints": [
     "static/js/runtime-main.827d3b5d.js",
     "static/css/2.df3e7b99.chunk.css",
-    "static/js/2.dbfe4df0.chunk.js",
-    "static/css/main.d8c16eac.chunk.css",
-    "static/js/main.61780657.chunk.js"
+    "static/js/2.0b1df537.chunk.js",
+    "static/css/main.4ae982fe.chunk.css",
+    "static/js/main.a7bc30ae.chunk.js"
   ]
 }
