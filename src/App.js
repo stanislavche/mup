@@ -381,8 +381,8 @@ class App extends React.Component {
                 onClick={this.handleButtonClick}>{this.isAudioLoading ? 'autorenew' : 'play_arrow'}</span>);
     }
 
-    renderVisualizer() {
-        if (!this.isIOS && !this.isAndroid && !this.isConsole && false) {
+    renderVisualizer(flag) {
+        if (!this.isIOS && !this.isAndroid && !this.isConsole && flag) {
             return(<Visualiser startAnimation={this.state.play} audio={this.state.audioObject}/>);
         }
     }
@@ -446,7 +446,7 @@ class App extends React.Component {
         if (this.state.play) {
             return (
                 <div className={'playerWrapper'}>
-                    {this.renderVisualizer()}
+                    {this.renderVisualizer(false)}
                     <div className={"imageWrapper"}>
                         {this.renderImage()}
                         <div className={"trackTitle"}>{this.setTitle()}</div>
@@ -486,7 +486,7 @@ class App extends React.Component {
     render() {
         return(
             <div className="App" >
-                {this.renderSpace(false)}
+                {this.renderSpace(true)}
                 {this.renderScene()}
             </div>
         )

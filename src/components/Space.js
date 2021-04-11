@@ -15,7 +15,7 @@ class Space  extends React.Component {
         this.stop = false;
         this.frameCount = 0;
         this.fps = null;
-        this.fpsInterval = 1000 / 30;
+        this.fpsInterval = 1000 / 15;
         this.startTime = null;
         this.now = null;
         this.then = null;
