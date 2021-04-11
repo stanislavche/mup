@@ -96,12 +96,12 @@ html, body {
     animation: rotateButton 2s linear infinite;
   }
 }
-.visualiser-element,
-.boy-element {
+.visualiser-element{
   position: fixed;
   top: 0;
   left: 0;
 }
+
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;
@@ -645,7 +645,7 @@ html, body {
 }
 .playerMenu {
   position: absolute;
-  bottom: 14px;
+  bottom: 15px;
   left: 50%;
   width: 78px;
   height: 50px;
@@ -709,7 +709,7 @@ html, body {
 
 .subMenu {
   position: fixed;
-  top: calc(50% - 146px);
+  top: calc(50% - 145px);
   left: 50%;
   width: 50px;
   transform: translate(-50%, -50%);
@@ -875,6 +875,10 @@ html, body {
     background-size: 30%;
     opacity: 0.3;
   }
+}
+
+.visual {
+  margin-top: 6px;
 }
 @media screen and (min-width: 601px) and (max-width: 900px) {
   .startButton {

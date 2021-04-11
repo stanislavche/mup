@@ -17,7 +17,7 @@ class Visualiser extends React.Component {
         this.stop = false;
         this.frameCount = 0;
         this.fps = null;
-        this.fpsInterval = 1000 / 24;
+        this.fpsInterval = 1000 / 20;
         this.startTime = null;
         this.now = null;
         this.then = null;
@@ -34,12 +34,7 @@ class Visualiser extends React.Component {
     }
 
     initAudio() {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        this.analyser = audioContext.createAnalyser();
-        this.analyser.fftSize = 256;
-        const source = audioContext.createMediaElementSource(this.props.audio);
-        source.connect(this.analyser);
-        this.analyser.connect(audioContext.destination);
+        this.analyser = this.props.analyser;
         this.frequencyArray = new Uint8Array(this.analyser.frequencyBinCount);
     }
 
@@ -60,8 +55,8 @@ class Visualiser extends React.Component {
         if (this.canvasRef.current) {
             this.analyser.getByteFrequencyData(this.frequencyArray);
             let bass = Math.floor(this.frequencyArray[1]); //1Hz Frequenz
-            //let radius = -(bass * 0.25 + 120);
-            let radius = -170;
+            let radius = -(bass * 0.25 + 120);
+            //let radius = -170;
 
             for (let i = 0; i < this.frequencyArray.length; i++) {
                 let position = this.frequencyArray[i];
@@ -88,13 +83,6 @@ class Visualiser extends React.Component {
             // }
             this.ctx.restore();
         }
-    }
-
-    resetFilters() {
-        this.setState({
-            bass: 20,
-            treble: 20
-        });
     }
 
     updateVisualization(newTime) {

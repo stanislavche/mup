@@ -46,9 +46,6 @@ import {
 import exampleImage from '../image/mup.gif';
 
 class Share  extends React.Component {
-    constructor(props) {
-        super(props);
-    }
     render() {
         const shareUrl = 'https://s-tn.space/mup';
         const title = 'Mup title';

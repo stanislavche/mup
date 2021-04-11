@@ -3,7 +3,6 @@ import * as React from "react";
 import './scss-variables.scss';
 import Space from './components/Space';
 import Visualiser from "./components/Visualiser";
-import Boy from './components/Boy';
 import {
     CircularInput,
     CircularTrack,
@@ -40,8 +39,6 @@ import img7 from "./image/dream.gif";
 import img8 from "./image/rail.gif";
 import img9 from "./image/mup-transparent.gif";
 import boy from './image/boy.gif';
-
-import Slider from '@appigram/react-rangeslider';
 import Share from "./components/Share";
 import Description from "./components/Description";
 const cUserAgent = navigator.userAgent.toLowerCase();
@@ -54,10 +51,11 @@ class App extends React.Component {
             play: false,
             audioObject: null,
             currentTrack: 0,
-            volume: 100,
+            volume: 70,
             mode: 'normal',
             bass: 20,
-            treble: 20
+            treble: 20,
+            visual: 'space'
         };
         this.volumeRef = React.createRef();
         this.bassRef = React.createRef();
@@ -70,6 +68,7 @@ class App extends React.Component {
         this.gainNode = null;
         this.bassFilter = null;
         this.trebleFilter = null;
+        this.audioSource = null;
 
         this.handleButtonClick = this.handleButtonClick.bind(this);
         this.setVolume = this.setVolume.bind(this);
@@ -146,6 +145,7 @@ class App extends React.Component {
         this.showShare = this.showShare.bind(this);
         this.showInfo = this.showInfo.bind(this);
         this.resetFilters = this.resetFilters.bind(this);
+        this.switchAnimation = this.switchAnimation.bind(this);
     }
 
     showSettings() {
@@ -191,7 +191,6 @@ class App extends React.Component {
     }
 
     setVolume(event) {
-        console.log('setVolume');
         if(event) {
             const value = event.target.value;
             this.setState({'volume': +value});
@@ -202,7 +201,6 @@ class App extends React.Component {
     }
 
     setBass(event , value) {
-        console.log('setBass');
         if(event || value) {
             const val = value || event.target.value;
             this.setState({'bass': +val});
@@ -213,7 +211,6 @@ class App extends React.Component {
     }
 
     setTreble(event , value) {
-        console.log('setTreble');
         if(event || value) {
             const val = value || event.target.value;
             this.setState({'treble': +val});
@@ -283,7 +280,6 @@ class App extends React.Component {
     }
 
     onLoadMedia() {
-        console.log('trigger event');
         this.audio.removeEventListener("loadeddata", this.onLoadMedia);
         this.setVolume();
         this.startProgressInteraval();
@@ -318,6 +314,18 @@ class App extends React.Component {
         this.resetFilters();
         this.initAudio('typeChange');
     }
+
+    renderVisualSwitcher() {
+        if (this.isAndroid || this.isIOS || this.isConsole) {
+            return false;
+        }
+        return(
+            <span className={this.state.visual === 'space' ? 'switcherHeader visual active' : 'switcherHeader visual'} onClick={this.switchAnimation}>
+                SPACE. {this.renderVisualButton()} SPECTR
+            </span>
+        );
+    }
+
     renderSettings() {
         if (this.state.mode === 'settings') {
             return (
@@ -331,9 +339,9 @@ class App extends React.Component {
                         EQ
                         {this.renderResetIcon()}
                     </span>
-
                     {this.renderTrebleControl()}
                     {this.renderBassControl()}
+                    {this.renderVisualSwitcher()}
                 </div>
             );
         }
@@ -401,9 +409,9 @@ class App extends React.Component {
         </span>);
     }
 
-    renderVisualizer(flag) {
-        if (!this.isIOS && !this.isAndroid && !this.isConsole && flag) {
-            return(<Visualiser startAnimation={this.state.play} audio={this.state.audioObject}/>);
+    renderVisualizer() {
+        if (!this.isIOS && !this.isAndroid && !this.isConsole && this.state.visual === 'spectr') {
+            return(<Visualiser startAnimation={this.state.play} analyser={this.analyser} />);
         }
     }
 
@@ -475,17 +483,26 @@ class App extends React.Component {
         return(<span className="audioSwitcher material-icons md-36">toggle_on</span>);
     }
 
-    renderSpace(flag) {
-        if (flag) {
+    renderVisualButton() {
+        if (this.state.visual === 'space') {
+            return (
+                <span className="audioSwitcher material-icons md-36">toggle_off</span>
+            );
+        }
+        return(<span className="audioSwitcher material-icons md-36">toggle_on</span>);
+    }
+
+    renderSpace() {
+        if (this.state.visual === 'space') {
             return (<Space />);
         }
     }
 
     initAudioControls() {
-        console.log('initAudio controls');
         this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const source = this.audioContext.createMediaElementSource(this.audio);
-
+        this.audioSource = this.audioContext.createMediaElementSource(this.audio);
+        this.analyser = this.audioContext.createAnalyser();
+        this.analyser.fftSize = 256;
         this.gainNode = this.audioContext.createGain();
         this.bassFilter = this.audioContext.createBiquadFilter();
         this.bassFilter.type = "lowshelf";
@@ -493,13 +510,19 @@ class App extends React.Component {
         this.trebleFilter = this.audioContext.createBiquadFilter();
         this.trebleFilter.type = "highshelf";
         this.trebleFilter.frequency.value = 2000;
-        source.connect(this.bassFilter);
+        this.audioSource.connect(this.bassFilter);
         this.bassFilter.connect(this.trebleFilter);
         this.trebleFilter.connect(this.gainNode);
-        this.gainNode.connect(this.audioContext.destination);
-        this.gainNode.gain.value = 1;
-        // this.trebleFilter.gain.value = 0;
-        // this.bassFilter.gain.value = 1541;
+        this.gainNode.connect(this.analyser);
+        this.analyser.connect(this.audioContext.destination);
+    }
+
+    switchAnimation() {
+        if (this.state.visual === 'space') {
+            this.setState({visual: 'spectr'});
+        } else {
+            this.setState({visual: 'space'});
+        }
     }
 
     setTitle() {
@@ -514,32 +537,35 @@ class App extends React.Component {
     renderScene() {
         if (this.state.play) {
             return (
-                <div className={'playerWrapper'}>
-                    {this.renderVisualizer(false)}
-                    <div className={"imageWrapper"}>
-                        {this.renderImage()}
-                        <div className={"trackTitle"}>{this.setTitle()}</div>
+                <>
+                    {this.renderVisualizer(true)}
+                    <div className={'playerWrapper'}>
+
+                        <div className={"imageWrapper"}>
+                            {this.renderImage()}
+                            <div className={"trackTitle"}>{this.setTitle()}</div>
+                        </div>
+                        <CircularInput className={'progressSwitcher'} value={this.playTime ? this.playTime : 0} onChange={this.setTrackPosition} radius={166}>
+                            <CircularTrack strokeWidth={4} stroke="#86c06c"/>
+                            <CircularProgress strokeWidth={10} stroke="#dff8d0"/>
+                        </CircularInput>
+                        <section className={'playerMenu'}>
+                            <span className={"switcher next material-icons md-36 buttonIcon"} onClick={this.initAudio.bind(this, 'next')}>
+                                arrow_forward_ios
+                            </span>
+                                <span className={"switcher prev material-icons md-36 buttonIcon"} onClick={this.initAudio.bind(this, 'prev')}>
+                                arrow_back_ios
+                            </span>
+                            {this.renderButton()}
+                        </section>
+                        <section className={'subMenu'}>
+                            {this.renderSettingsIcon()}
+                        </section>
+                        {this.renderSettings()}
+                        {this.renderShare()}
+                        {this.renderInfo()}
                     </div>
-                    <CircularInput className={'progressSwitcher'} value={this.playTime ? this.playTime : 0} onChange={this.setTrackPosition} radius={166}>
-                        <CircularTrack strokeWidth={4} stroke="#86c06c"/>
-                        <CircularProgress strokeWidth={10} stroke="#dff8d0"/>
-                    </CircularInput>
-                    <section className={'playerMenu'}>
-                        <span className={"switcher next material-icons md-36 buttonIcon"} onClick={this.initAudio.bind(this, 'next')}>
-                            arrow_forward_ios
-                        </span>
-                            <span className={"switcher prev material-icons md-36 buttonIcon"} onClick={this.initAudio.bind(this, 'prev')}>
-                            arrow_back_ios
-                        </span>
-                        {this.renderButton()}
-                    </section>
-                    <section className={'subMenu'}>
-                        {this.renderSettingsIcon()}
-                    </section>
-                    {this.renderSettings()}
-                    {this.renderShare()}
-                    {this.renderInfo()}
-                </div>
+                </>
             )
         } else {
             return (
