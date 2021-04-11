@@ -310,6 +310,10 @@ class App extends React.Component {
         if (this.state.mode === 'settings') {
             return (
                 <div className={"settings subWrapper"}>
+                    <span className={"subWrapper__title"}>mastering</span>
+                    <span className={this.audioType === 'post' ? 'switcherHeader active' : 'switcherHeader'} onClick={this.setAudioType}>
+                        OFF {this.renderAudioTypeButton()} ON.
+                    </span>
                     {this.renderVolControl()}
                     <span className={"subWrapper__title"}>bass</span>
                     <Slider
@@ -327,10 +331,7 @@ class App extends React.Component {
                         value={this.state.treble}
                         orientation="horizontal"
                         onChange={this.setTreble} />
-                    <span className={"subWrapper__title"}>mastering</span>
-                    <span className={this.audioType === 'post' ? 'switcherHeader active' : 'switcherHeader'} onClick={this.setAudioType}>
-                            OFF {this.renderAudioTypeButton()} ON.
-                        </span>
+
 
                 </div>
             );
@@ -415,10 +416,10 @@ class App extends React.Component {
     renderAudioTypeButton() {
         if (this.audioType === 'org') {
             return (
-                <span className="audioSwitcher material-icons md-48">toggle_off</span>
+                <span className="audioSwitcher material-icons md-36">toggle_off</span>
             );
         }
-        return(<span className="audioSwitcher material-icons md-48">toggle_on</span>);
+        return(<span className="audioSwitcher material-icons md-36">toggle_on</span>);
     }
 
     renderSpace(flag) {

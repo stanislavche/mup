@@ -20,7 +20,7 @@ class Description  extends React.Component {
                     MUSIC: <a href={stnLink}  rel="noopener noreferrer" className={"info__link info__link_stn"} target={"_blank"}>S_TN</a>
                     <br />
                     ART: <a href={katikaLink} className={"info__insta"}  rel="noopener noreferrer" target={"_blank"}>
-                        <span class={"info__gradient"}>@ Katika_Taoka</span>
+                        <span className={"info__gradient"}>@ Katika_Taoka</span>
                     </a>
                 </p>
 

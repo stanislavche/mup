@@ -84,6 +84,8 @@ html, body {
   }
   &.active {
     opacity: 1;
+    color: #dff8d0;
+    border-color: #dff8d0;
   }
   &.loading {
     animation: rotateButton 2s linear infinite;
@@ -245,7 +247,7 @@ html, body {
 }
 
 .settings{
-
+  padding-top: 20px;
 }
 
 .volumeSwitcher{
@@ -263,10 +265,14 @@ html, body {
   cursor: pointer;
   text-shadow: 3px 1px 2px #071820 ;
   color: #86c06c;
-  transition: color 0.2s;
-  -webkit-transition: color 0.2s;
-  -moz-transition: color 0.2s;
-  -o-transition: color 0.2s;
+  transition: color 0.2s, opacity 0.2s;
+  -webkit-transition: color 0.2s, opacity 0.2s;
+  -moz-transition: color 0.2s, opacity 0.2s;
+  -o-transition: color 0.2s, opacity 0.2s;
+  opacity: 1;
+  &:hover{
+    opacity: 0.8;
+  }
   &.active {
     color: #dff8d0;
     .audioSwitcher {
