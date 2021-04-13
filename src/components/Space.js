@@ -80,7 +80,6 @@ class Space  extends React.Component {
     };
 
     init(time) {
-        console.log('çall me');
         this.prevTime = time;
         requestAnimationFrame(this.tick);
     };
