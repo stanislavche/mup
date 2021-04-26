@@ -125,11 +125,11 @@ class Visualiser extends React.Component {
     }
 
     componentDidMount(prevProps) {
-        if (!prevProps || prevProps && prevProps.audio !== this.props.audio) {
+        if (!prevProps || (prevProps && prevProps.audio !== this.props.audio)) {
             this.initAudio();
             this.pausePauseEvent();
         }
-        if (!prevProps || prevProps && prevProps.startAnimation !== this.props.startAnimation) {
+        if (!prevProps || (prevProps && prevProps.startAnimation !== this.props.startAnimation)) {
             this.pausePauseEvent();
         }
     }

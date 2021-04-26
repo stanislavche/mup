@@ -30,7 +30,7 @@ import track8Raw from "./audio/8 raw.mp3";
 import track9Raw from "./audio/9 raw.mp3";
 import track10Raw from "./audio/10 raw.mp3";
 import img1 from "./image/serenity.gif";
-import img2 from "./image/rocket.gif";
+//import img2 from "./image/rocket.gif";
 import img3 from "./image/promise.gif";
 import img4 from "./image/spacetime.gif";
 import img5 from "./image/popcorn.gif";
@@ -44,6 +44,7 @@ import Description from "./components/Description";
 const cUserAgent = navigator.userAgent.toLowerCase();
 
 
+
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -51,12 +52,15 @@ class App extends React.Component {
             play: false,
             audioObject: null,
             currentTrack: 0,
-            volume: 70,
+            volume: 50,
             mode: 'normal',
             bass: 20,
             treble: 20,
             visual: 'space'
         };
+        this.queryParams = window.location.search.substring(1).split('&')
+            .map(p => p.split('='))
+            .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
         this.volumeRef = React.createRef();
         this.bassRef = React.createRef();
         this.trebleRef = React.createRef();
@@ -316,7 +320,7 @@ class App extends React.Component {
     }
 
     renderVisualSwitcher() {
-        if (this.isAndroid || this.isIOS || this.isConsole) {
+        if (this.isAndroid || this.isIOS || this.isConsole || this.queryParams.animation === 'hide') {
             return false;
         }
         return(
@@ -493,7 +497,7 @@ class App extends React.Component {
     }
 
     renderSpace() {
-        if (this.state.visual === 'space') {
+        if (this.state.visual === 'space' && this.queryParams.animation !== 'hide') {
             return (<Space />);
         }
     }
@@ -581,7 +585,7 @@ class App extends React.Component {
     render() {
         return(
             <div className="App" >
-                {this.renderSpace(true)}
+                {this.renderSpace()}
                 {this.renderScene()}
             </div>
         )

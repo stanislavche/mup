@@ -1,9 +1,6 @@
 import * as React from "react";
 
 class Description  extends React.Component {
-    constructor(props) {
-        super(props);
-    }
     render() {
         const stnLink = "https://s-tn.space/mup";
         const katikaLink = "https://www.instagram.com/katika_taoka_art/";
