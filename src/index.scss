@@ -92,9 +92,9 @@ html, body {
     color: #dff8d0;
     border-color: #dff8d0;
   }
-  &.loading {
-    animation: rotateButton 2s linear infinite;
-  }
+}
+.loading {
+  animation: rotateButton 2s linear infinite;
 }
 .visualiser-element{
   position: fixed;
@@ -745,6 +745,7 @@ html, body {
 .share {
   &__button {
     display: inline-block;
+    line-height: 16px;
     margin: 3px 2px;
     opacity: 0.8;
     transition: opacity 0.2s;

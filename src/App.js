@@ -407,10 +407,13 @@ class App extends React.Component {
             );
         }
         return(
-        <span
-                className={"playButton material-icons notranslate  active md-36 buttonIcon " + (this.isAudioLoading ? 'loading' : '')}
-                onClick={this.handleButtonClick}>{this.isAudioLoading ? 'autorenew' : 'play_arrow'}
-        </span>);
+            <span className={"playButton buttonIcon"}>
+                <span
+                    className={"material-icons notranslate  active md-36 " + (this.isAudioLoading ? 'loading' : '')}
+                    onClick={this.handleButtonClick}>{this.isAudioLoading ? 'autorenew' : 'play_arrow'}
+                </span>
+            </span>
+        );
     }
 
     renderVisualizer() {
@@ -575,8 +578,7 @@ class App extends React.Component {
             return (
                 <>
                     <img className={"mainLogo"} src={img9} alt={"logo"} />
-                    <span className="startButton inactive material-icons notranslate " onClick={this.handleButtonClick}>play_arrow</span>
-                    <span className={"material-icons notranslate  hidden-text"}>arrow_forward_ios</span>
+                    <span className="startButton inactive material-icons notranslate " onClick={this.handleButtonClick}>&#xE037;</span>
                 </>
             );
         }
