@@ -407,10 +407,9 @@ class App extends React.Component {
             );
         }
         return(
-            <span className={"playButton buttonIcon"}>
-                <span
-                    className={"material-icons notranslate  active md-36 " + (this.isAudioLoading ? 'loading' : '')}
-                    onClick={this.handleButtonClick}>{this.isAudioLoading ? 'autorenew' : 'play_arrow'}
+            <span className={"playButton buttonIcon"} onClick={this.handleButtonClick}>
+                <span className={"material-icons notranslate  active md-36 " + (this.isAudioLoading ? 'loading' : '')}>
+                    {this.isAudioLoading ? 'autorenew' : 'play_arrow'}
                 </span>
             </span>
         );
