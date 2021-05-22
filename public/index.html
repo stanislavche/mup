@@ -33,33 +33,18 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-N8G1KRJ2NX');
     </script>
-    <style>
-      .bandcamp {
-        width: 172px;
-        position: fixed;
-        bottom: 10px;
-        z-index: 1000;
-        left: 50%;
-        transform: translateX(-50%);
-        -webkit-transform: translateX(-50%);
-        -moz-transform: translateX(-50%);
-        -ms-transform: translateX(-50%);
-        -o-transform: translateX(-50%);
-      }
-      .bandcamp:hover {
-        opacity: 0.9;
-      }
-    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <div class="bandcamp">
-      <iframe scrolling="no" style="border: 0;width: 100%;height: 33px;user-select: none;" src="https://bandcamp.com/band_follow_button_classic/2612602904"></iframe>
-    </div>
+    <a class="spotifyLink buttonIcon" href="https://open.spotify.com/album/2FURhN6tYIdyvosaGH7h5k?si=UadISIP0QjOVpDRWUVm74w">
+      <img src="%PUBLIC_URL%/img/spotify.png" alt="spotify" />
+    </a>
 
+<!--    <div class="bandcamp">-->
+<!--      <iframe scrolling="no" style="border: 0;width: 100%;height: 33px;user-select: none;" src="https://bandcamp.com/band_follow_button_classic/2612602904"></iframe>-->
+<!--    </div>-->
   </body>
 </html>
