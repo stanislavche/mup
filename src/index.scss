@@ -876,6 +876,8 @@ html, body {
   opacity: 0.9;
 }
 .spotifyLink {
+  outline: none;
+  user-select: none;
   width: 60px;
   height: 60px;
   position: fixed;
