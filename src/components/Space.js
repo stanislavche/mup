@@ -15,7 +15,7 @@ class Space  extends React.Component {
         this.stop = false;
         this.frameCount = 0;
         this.fps = null;
-        this.fpsInterval = 1000 / 15;
+        this.fpsInterval = 600 / 15;
         this.startTime = null;
         this.now = null;
         this.then = null;
@@ -29,7 +29,7 @@ class Space  extends React.Component {
         this.canvas = this.canvasRef.current;
         this.ctx = this.canvas.getContext("2d");
         this.setCanvasExtents();
-        this.stars = this.makeStars(600);
+        this.stars = this.makeStars(300);
         this.init = this.init.bind(this);
         this.tick = this.tick.bind(this);
         requestAnimationFrame(this.init);
