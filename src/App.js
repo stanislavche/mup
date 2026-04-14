@@ -57,7 +57,7 @@ class App extends React.Component {
             bass: 20,
             treble: 20,
             showSpace: true,
-            showSpectr: false,
+            showSpectr: true,
             track2Unlocked: false,
             showKonamiPanel: false,
             konamiFlash: null,   // null | 'unlocked' | 'locked'
@@ -77,6 +77,12 @@ class App extends React.Component {
         this.volumeRef = React.createRef();
         this.bassRef = React.createRef();
         this.trebleRef = React.createRef();
+        this.playerRef = React.createRef();   // smooth tilt target
+        // smooth tilt lerp state (bypasses React render cycle)
+        this._sx = 0;  // current smooth tilt X  (-1 … +1)
+        this._sy = 0;  // current smooth tilt Y
+        this._tiltRafId = null;
+        this._tiltTick = this._tiltTick.bind(this);
         this.playTime = 0;
         this.isAudioLoading = false;
         this.audio = new Audio();
@@ -166,18 +172,43 @@ class App extends React.Component {
         this.resetFilters = this.resetFilters.bind(this);
     }
 
-    // ─── Arrow-key ship direction tracking ───────────────────────────────────
+    // ─── Smooth tilt via rAF lerp (like Space.js star offset) ───────────────
+    _tiltTick() {
+        this._tiltRafId = requestAnimationFrame(this._tiltTick);
+        const { keys, pilotMode, mode } = this.state;
+        const shouldTilt = pilotMode || mode === 'normal';
+        const tx = shouldTilt ? ((keys.ArrowRight ? 1 : 0) - (keys.ArrowLeft ? 1 : 0)) : 0;
+        const ty = shouldTilt ? ((keys.ArrowDown  ? 1 : 0) - (keys.ArrowUp   ? 1 : 0)) : 0;
+        // lerp speed: 0.04 ≈ smooth ~70 frame ramp, same feel as star offset
+        this._sx += (tx - this._sx) * 0.04;
+        this._sy += (ty - this._sy) * 0.04;
+        const el = this.playerRef.current;
+        if (el) {
+            el.style.transform =
+                `translate(-50%, -50%) perspective(700px) rotate(${this._sx * 22}deg) rotateX(${this._sy * 15}deg)`;
+        }
+    }
+
+    // ─── Arrow-key / WASD ship direction tracking ────────────────────────────
     handleArrowDown(e) {
+        const tag = document.activeElement && document.activeElement.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+        const WASD_MAP = { w: 'ArrowUp', s: 'ArrowDown', a: 'ArrowLeft', d: 'ArrowRight',
+                           'ц': 'ArrowUp', 'ы': 'ArrowDown', 'ф': 'ArrowLeft', 'в': 'ArrowRight' };
+        const key = WASD_MAP[e.key] || e.key;
         const DIRS = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
-        if (DIRS.includes(e.key) && !this.state.keys[e.key]) {
-            this.setState(s => ({ keys: { ...s.keys, [e.key]: true } }));
+        if (DIRS.includes(key) && !this.state.keys[key]) {
+            this.setState(s => ({ keys: { ...s.keys, [key]: true } }));
         }
     }
 
     handleArrowUp(e) {
+        const WASD_MAP = { w: 'ArrowUp', s: 'ArrowDown', a: 'ArrowLeft', d: 'ArrowRight',
+                           'ц': 'ArrowUp', 'ы': 'ArrowDown', 'ф': 'ArrowLeft', 'в': 'ArrowRight' };
+        const key = WASD_MAP[e.key] || e.key;
         const DIRS = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
-        if (DIRS.includes(e.key) && this.state.keys[e.key]) {
-            this.setState(s => ({ keys: { ...s.keys, [e.key]: false } }));
+        if (DIRS.includes(key) && this.state.keys[key]) {
+            this.setState(s => ({ keys: { ...s.keys, [key]: false } }));
         }
     }
 
@@ -210,12 +241,14 @@ class App extends React.Component {
         window.addEventListener('keydown', this.konamiHandler);
         window.addEventListener('keydown', this.handleArrowDown);
         window.addEventListener('keyup',   this.handleArrowUp);
+        this._tiltRafId = requestAnimationFrame(this._tiltTick);
     }
 
     componentWillUnmount() {
         window.removeEventListener('keydown', this.konamiHandler);
         window.removeEventListener('keydown', this.handleArrowDown);
         window.removeEventListener('keyup',   this.handleArrowUp);
+        if (this._tiltRafId) cancelAnimationFrame(this._tiltRafId);
         clearTimeout(this._konamiTimer);
     }
 
@@ -632,20 +665,12 @@ class App extends React.Component {
 
     renderScene() {
         if (this.state.play) {
-            const { keys, mode, pilotMode } = this.state;
-            const tiltX = (keys.ArrowRight ? 1 : 0) - (keys.ArrowLeft ? 1 : 0);
-            const tiltY = (keys.ArrowDown  ? 1 : 0) - (keys.ArrowUp   ? 1 : 0);
-            // Tilt whole player: in pilot mode always active; otherwise only when no panel open
-            const shouldTilt = pilotMode || mode === 'normal';
-            const shipStyle = {
-                transform: `translate(-50%, -50%) perspective(700px) rotate(${shouldTilt ? tiltX * 22 : 0}deg) rotateX(${shouldTilt ? tiltY * 15 : 0}deg)`,
-                transition: 'transform 0.15s ease-out',
-            };
+            const { mode, pilotMode } = this.state;
 
             return (
                 <>
                     {this.renderVisualizer(true)}
-                    <div className={'playerWrapper'} style={shipStyle}>
+                    <div className={'playerWrapper'} ref={this.playerRef}>
 
                         {/* In pilot mode show boy.gif, otherwise current track image */}
                         <div className={"imageWrapper"}>
