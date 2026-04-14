@@ -1,19 +1,6 @@
-@import "scss-variables";
+@use "sass:math";
+@use "scss-variables" as *;
 @import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
-@import "~react-input-range-ios-fix/lib/css/index.css";
-@import "~@appigram/react-rangeslider/lib/index.css";
-$material-icons-font-path: '~material-icons/iconfont/';
-@import '~material-icons/iconfont/material-icons.scss';
-
-$material-icons-codepoints: () !default; /* Sass map of icon names and codepoints */
-$material-icons-font-path: '' !default;
-$material-icons-font-name: 'MaterialIcons-Regular' !default;
-$material-icons-font-size: 24px !default;
-$material-icons-font-family: 'Material Icons' !default;
-
-.material-icons {
-  @include material-icons();
-}
 
 body {
   margin: 0;
@@ -24,20 +11,22 @@ body {
 .App {
   width: 100%;
   height: 100%;
-  &:before {
-    width: 100%;
-    height: 100%;
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-image: url('./image/milky_way.gif');
-    background-position: 50% 50%;
-    background-size: 60%;
-    background-repeat: no-repeat;
-    opacity: 0.05;
-    animation: App-galactic-spin infinite 180s linear;
-  }
+}
+
+.galaxy-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  background-image: url('./image/milky_way.gif');
+  background-position: 50% 50%;
+  background-size: 60%;
+  background-repeat: no-repeat;
+  opacity: 0.07;
+  animation: App-galactic-spin infinite 180s linear;
 }
 
 * {
@@ -58,6 +47,7 @@ html, body {
   border: 2px solid #316851;
   cursor: pointer;
   background: #071820;
+  color: #86c06c;
   opacity: 0.2;
   transition: opacity 0.2s;
   -webkit-transition: opacity 0.2s;
@@ -97,10 +87,20 @@ html, body {
 .loading {
   animation: rotateButton 2s linear infinite;
 }
+.space-element {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
 .visualiser-element{
   position: fixed;
   top: 0;
   left: 0;
+  z-index: 2;
+  pointer-events: none;
 }
 
 .material-icons {
@@ -429,9 +429,8 @@ html, body {
   height: 100%;
   border-radius: 50%;
   animation: spinZ 60s linear infinite;
-  text-align: center;
-  font-weight: 700;
-  text-shadow: 2px 2px 2px #000;
+  z-index: 4;           /* above info/settings panels */
+  pointer-events: none; /* clicks pass through to buttons below */
   span {
     position: absolute;
     display: inline-block;
@@ -589,11 +588,11 @@ html, body {
 
 @for $i from 0 through 29 {
   .char-#{$i} {
-    transform: rotateZ(#{(360 / 29 * $i)}deg) translate3d(0px, 0px, 0px);
-    -webkit-transform: rotateZ(#{(360 / 30 * $i)}deg) translate3d(0px, 0px, 0px);
-    -moz-transform: rotateZ(#{(360 / 30 * $i)}deg) translate3d(0px, 0px, 0px);
-    -ms-transform: rotateZ(#{(360 / 30 * $i)}deg) translate3d(0px, 0px, 0px);
-    -o-transform: rotateZ(#{(360 / 30 * $i)}deg) translate3d(0px, 0px, 0px);
+    transform: rotateZ(#{math.div(360 * $i, 29)}deg) translate3d(0, 0, 0);
+    -webkit-transform: rotateZ(#{math.div(360 * $i, 30)}deg) translate3d(0, 0, 0);
+    -moz-transform: rotateZ(#{math.div(360 * $i, 30)}deg) translate3d(0, 0, 0);
+    -ms-transform: rotateZ(#{math.div(360 * $i, 30)}deg) translate3d(0, 0, 0);
+    -o-transform: rotateZ(#{math.div(360 * $i, 30)}deg) translate3d(0, 0, 0);
   }
 }
 
@@ -625,6 +624,7 @@ html, body {
   position: fixed;
   left: 50%;
   top: 50%;
+  z-index: 3;
   transform: translate(-50%, -50%);
   -webkit-transform: translate(-50%, -50%);
   -moz-transform: translate(-50%, -50%);
@@ -709,38 +709,45 @@ html, body {
 
 .subMenu {
   position: fixed;
-  top: calc(50% - 145px);
+  top: 50%;
   left: 50%;
-  width: 50px;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-  -webkit-transform: translate(-50%, -50%);
-  -moz-transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  -o-transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+  z-index: 3;
 }
 
-.settingsIcon {
-  position: absolute;
-  top: 18px;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  -webkit-transform: translate(-50%, -50%);
-  -moz-transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  -o-transform: translate(-50%, -50%);
-}
+// Arc radius — sits just inside the circle ring
+$arc-r: 122px;
+// Half icon size for centering
+$icon-half: 19px;
 
-.ccIcon {
-  position: absolute;
-  top: 11px;
-  left: -44px;
-}
+// Base for all arc icons: absolute, centered at subMenu origin
+.pilotIcon,
+.ccIcon,
+.settingsIcon,
 .shareIcon {
   position: absolute;
-  top: 11px;
-  right: -44px;
+  width: 38px;
+  height: 38px;
+  margin-top: -$icon-half;
+  margin-left: -$icon-half;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  // Cancel the global .buttonIcon:active { margin-top: 1px } —
+  // that 1px shifts the element before the arc transform is applied,
+  // making the icon jump visibly. Keep position locked; only opacity changes.
+  &:active {
+    margin-top: -$icon-half;
+  }
 }
+
+// 4 icons in a tight arc: ±45° outer, ±15° inner — all stay near the top
+// rotate(A) translateY(-R) rotate(-A) = place on arc, keep icon upright
+.pilotIcon    { transform: rotate(-30deg) translateY(-#{$arc-r}) rotate(30deg); }
+.ccIcon       { transform: rotate(-10deg) translateY(-#{$arc-r}) rotate(10deg); }
+.settingsIcon { transform: rotate(10deg)  translateY(-#{$arc-r}) rotate(-10deg); }
+.shareIcon    { transform: rotate(30deg)  translateY(-#{$arc-r}) rotate(-30deg); }
 
 .share {
   &__button {
@@ -796,8 +803,6 @@ html, body {
     display: inline-block;
     transition: all 0.1s;
     -webkit-transition: all 0.1s;
-    -moz-transition: all 0.1s;
-    -o-transition: all 0.1s;
     &:hover{
       opacity: 0.9;
     }
@@ -809,21 +814,18 @@ html, body {
         transform: scale(1.2);
       }
     }
-
   }
   &__insta{
     float: right;
     background: #fff;
     color: #071820 !important;
-    padding: 0px 4px;
+    padding: 0 4px;
     border-radius: 4px;
     text-decoration: none !important;
     font-weight: 700;
     font-size: 14px;
     transition: all 0.1s;
     -webkit-transition: all 0.1s;
-    -moz-transition: all 0.1s;
-    -o-transition: all 0.1s;
     &:hover{
       transform: scale(1.1);
     }
@@ -861,53 +863,138 @@ html, body {
   margin-top: 6px;
 }
 
-.bandcamp {
-  width: 172px;
+.vis-toggles {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.vis-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  color: #86c06c;
+  font-size: 13px;
+  user-select: none;
+  transition: color 0.15s;
+
+  &:hover {
+    color: #dff8d0;
+  }
+
+  .vis-check {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border: 2px solid #316851;
+    border-radius: 3px;
+    background: #071820;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+    transition: background 0.15s, border-color 0.15s;
+
+    &:checked {
+      background: #86c06c;
+      border-color: #86c06c;
+
+      &:after {
+        content: '';
+        position: absolute;
+        left: 2px;
+        top: -1px;
+        width: 5px;
+        height: 8px;
+        border: 2px solid #071820;
+        border-top: none;
+        border-left: none;
+        transform: rotate(45deg);
+      }
+    }
+
+    &:hover {
+      border-color: #96ccaa;
+    }
+  }
+}
+
+.bottom-links {
   position: fixed;
-  bottom: 10px;
-  z-index: 1000;
+  bottom: 18px;
   left: 50%;
   transform: translateX(-50%);
-  -webkit-transform: translateX(-50%);
-  -moz-transform: translateX(-50%);
-  -ms-transform: translateX(-50%);
-  -o-transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
-.bandcamp:hover {
-  opacity: 0.9;
-}
-.spotifyLink {
+
+.stream-link {
   outline: none;
   user-select: none;
-  width: 60px;
-  height: 60px;
-  position: fixed;
-  bottom: 30px;
-  z-index: 1000;
-  display: block;
-  left: 50%;
-  transform: translateX(-50%);
-  -webkit-transform: translateX(-50%);
-  -moz-transform: translateX(-50%);
-  -ms-transform: translateX(-50%);
-  -o-transform: translateX(-50%);
-  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
   border: none;
-  opacity: 0.5;
-  &:hover{
+  border-radius: 50%;
+  background: transparent;
+  box-sizing: border-box;
+  opacity: 0.55;
+  color: #86c06c;
+  transition: opacity 0.2s;
+  flex-shrink: 0;
+  &:hover {
     opacity: 1;
   }
-  img {
+  img, svg {
     display: block;
-    position: absolute;
-    top:0;
-    left: 0;
-    opacity: 1;
-    margin: 0;
     width: 100%;
     height: 100%;
   }
 }
+
+// ─── Pilot screen ─────────────────────────────────────────────────────────────
+.pilot-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.pilot-boy {
+  display: block;
+  width: 280px;
+  height: auto;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 0 18px rgba(134, 192, 108, 0.35));
+}
+
+// Floating exit button shown during pilot mode (above center)
+.pilot-controls {
+  position: fixed;
+  top: calc(50% - 210px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  pointer-events: auto;
+}
+
+.pilotIcon--floating {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// pilotIcon arc position is set above alongside ccIcon/settingsIcon/shareIcon
 
 @keyframes App-galactic-spin {
   from {
@@ -938,10 +1025,13 @@ html, body {
     background-size: 30%;
     opacity: 0.3;
   }
-  .spotifyLink {
-    width: 40px;
-    height: 40px;
-    bottom: 10px;
+  .stream-link {
+    width: 32px;
+    height: 32px;
+  }
+  .bottom-links {
+    bottom: 8px;
+    gap: 8px;
   }
 }
 @media screen and (min-width: 601px) and (max-width: 900px) {
@@ -956,9 +1046,194 @@ html, body {
       opacity: 0.6;
     }
   }
-  .App:before {
-    background-size: 30%;
-    opacity: 0.2;
+}
+
+// ─── Konami code flash ───────────────────────────────────────────────────────
+@keyframes konami-appear {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.75); }
+  12%  { opacity: 1; transform: translate(-50%, -50%) scale(1.04); }
+  20%  { transform: translate(-50%, -50%) scale(1); }
+  80%  { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+}
+
+.konami-flash {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+
+  background: rgba(7, 24, 32, 0.96);
+  border: 1px solid #5a9470;
+  color: #dff8d0;
+  padding: 18px 40px;
+  letter-spacing: 4px;
+  font-size: 13px;
+  text-align: center;
+  white-space: nowrap;
+  box-shadow: 0 0 30px rgba(150, 204, 170, 0.25),
+              inset 0 0 20px rgba(90, 148, 112, 0.08);
+
+  animation: konami-appear 2.6s ease forwards;
+
+  &--unlocked {
+    border-color: #96ccaa;
+    color: #dff8d0;
+    box-shadow: 0 0 40px rgba(150, 204, 170, 0.4),
+                inset 0 0 20px rgba(90, 148, 112, 0.1);
+  }
+  &--locked {
+    border-color: #2d5c3e;
+    color: #5a9470;
   }
 }
+
+// ─── Konami secret panel ─────────────────────────────────────────────────────
+@keyframes konami-panel-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.93);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.konami-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: rgba(7, 24, 32, 0.55);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  cursor: pointer;
+}
+
+.konami-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 9001;
+  transform: translate(-50%, -50%);
+  min-width: 270px;
+  padding: 22px 26px 24px;
+  box-sizing: border-box;
+  text-align: center;
+
+  background: rgba(7, 24, 32, 0.98);
+  border: 1px solid #2d5c3e;
+  box-shadow: 0 0 40px rgba(90, 148, 112, 0.15),
+              inset 0 0 30px rgba(7, 24, 32, 0.6);
+
+  animation: konami-panel-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+
+  &__label {
+    font-size: 9px;
+    letter-spacing: 5px;
+    color: #2d5c3e;
+    user-select: none;
+  }
+
+  &__close {
+    font-size: 16px !important;
+    color: #316851;
+    cursor: pointer;
+    line-height: 1;
+    padding: 2px;
+    transition: color 0.15s;
+    user-select: none;
+    &:hover { color: #dff8d0; }
+  }
+
+  &__track {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: #96ccaa;
+    padding: 10px 12px;
+    border: 1px solid #1e3a2a;
+    margin-bottom: 14px;
+    background: rgba(30, 58, 42, 0.18);
+  }
+
+  &__status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    font-size: 9px;
+    letter-spacing: 4px;
+    color: #5a9470;
+    margin-bottom: 22px;
+    user-select: none;
+  }
+
+  &__dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    &--locked   { background: #7a1a1a; box-shadow: 0 0 5px rgba(180, 30, 30, 0.6); }
+    &--unlocked { background: #2d8c50; box-shadow: 0 0 5px rgba(45, 140, 80, 0.6); }
+  }
+
+  // ── action button ──────────────────────────────────────────────────────────
+  &__btn {
+    display: inline-block;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    padding: 11px 26px;
+    cursor: pointer;
+    border-radius: 2px;
+    outline: none;
+    transition: all 0.2s;
+    user-select: none;
+
+    // ── red: unlock ──────────────────────────────────────────────
+    &--unlock {
+      background: #120808;
+      border: 2px solid #7a1a1a;
+      color: #cc4444;
+      text-shadow: 0 0 8px rgba(200, 40, 40, 0.45);
+      box-shadow: 0 0 14px rgba(160, 20, 20, 0.2),
+                  inset 0 0 10px rgba(100, 10, 10, 0.15);
+
+      &:hover {
+        border-color: #dd3333;
+        color: #ff8888;
+        box-shadow: 0 0 28px rgba(220, 50, 50, 0.45),
+                    inset 0 0 14px rgba(150, 20, 20, 0.2);
+        text-shadow: 0 0 14px rgba(255, 80, 80, 0.9);
+      }
+      &:active { transform: scale(0.97); }
+    }
+
+    // ── green: lock ───────────────────────────────────────────────
+    &--lock {
+      background: #071820;
+      border: 2px solid #316851;
+      color: #86c06c;
+
+      &:hover {
+        border-color: #86c06c;
+        color: #dff8d0;
+        box-shadow: 0 0 16px rgba(134, 192, 108, 0.25);
+      }
+      &:active { transform: scale(0.97); }
+    }
+  }
+}
+
+
 

@@ -30,7 +30,7 @@ import track8Raw from "./audio/8 raw.mp3";
 import track9Raw from "./audio/9 raw.mp3";
 import track10Raw from "./audio/10 raw.mp3";
 import img1 from "./image/serenity.gif";
-//import img2 from "./image/rocket.gif";
+import img2 from "./image/rocket.gif";
 import img3 from "./image/promise.gif";
 import img4 from "./image/spacetime.gif";
 import img5 from "./image/popcorn.gif";
@@ -56,8 +56,21 @@ class App extends React.Component {
             mode: 'normal',
             bass: 20,
             treble: 20,
-            visual: 'space'
+            showSpace: true,
+            showSpectr: false,
+            track2Unlocked: false,
+            showKonamiPanel: false,
+            konamiFlash: null,   // null | 'unlocked' | 'locked'
+            pilotMode: false,
+            // arrow-key state for ship tilt + star/spectrum direction
+            keys: { ArrowUp: false, ArrowDown: false, ArrowLeft: false, ArrowRight: false },
         };
+
+        // ─── Konami code: ↑ ↑ ↓ ↓ ← → ← → Enter ────────────────────────
+        this.KONAMI     = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown',
+                           'ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','Enter'];
+        this.konamiBuf  = [];
+        this.konamiHandler = this.konamiHandler.bind(this);
         this.queryParams = window.location.search.substring(1).split('&')
             .map(p => p.split('='))
             .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
@@ -79,6 +92,8 @@ class App extends React.Component {
         this.setTrackPosition = this.setTrackPosition.bind(this);
         this.setBass = this.setBass.bind(this);
         this.setTreble = this.setTreble.bind(this);
+        this.handleArrowDown = this.handleArrowDown.bind(this);
+        this.handleArrowUp   = this.handleArrowUp.bind(this);
 
         this.albumArray = [{
             post: track1,
@@ -88,7 +103,7 @@ class App extends React.Component {
         },{
             post: track2,
             org: track2Raw,
-            img: img6,
+            img: img2,
             title: 'S_TN * HOLY ROCKET ***********'
         },{
             post: track3,
@@ -149,30 +164,82 @@ class App extends React.Component {
         this.showShare = this.showShare.bind(this);
         this.showInfo = this.showInfo.bind(this);
         this.resetFilters = this.resetFilters.bind(this);
-        this.switchAnimation = this.switchAnimation.bind(this);
+    }
+
+    // ─── Arrow-key ship direction tracking ───────────────────────────────────
+    handleArrowDown(e) {
+        const DIRS = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+        if (DIRS.includes(e.key) && !this.state.keys[e.key]) {
+            this.setState(s => ({ keys: { ...s.keys, [e.key]: true } }));
+        }
+    }
+
+    handleArrowUp(e) {
+        const DIRS = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+        if (DIRS.includes(e.key) && this.state.keys[e.key]) {
+            this.setState(s => ({ keys: { ...s.keys, [e.key]: false } }));
+        }
+    }
+
+    // ─── Konami-code handler ──────────────────────────────────────────────
+    konamiHandler(e) {
+        this.konamiBuf.push(e.key);
+        if (this.konamiBuf.length > this.KONAMI.length) this.konamiBuf.shift();
+        if (this.konamiBuf.join(',') === this.KONAMI.join(',')) {
+            this.konamiBuf = [];
+            this.setState({ showKonamiPanel: true });
+        }
+    }
+
+    // Called from inside the panel — does the actual lock/unlock
+    confirmKonami() {
+        const nowUnlocked = !this.state.track2Unlocked;
+        const nextTrack = (!nowUnlocked && this.state.currentTrack === 1)
+            ? 0 : this.state.currentTrack;
+        this.setState({
+            track2Unlocked: nowUnlocked,
+            currentTrack: nextTrack,
+            showKonamiPanel: false,
+            konamiFlash: nowUnlocked ? 'unlocked' : 'locked',
+        });
+        clearTimeout(this._konamiTimer);
+        this._konamiTimer = setTimeout(() => this.setState({ konamiFlash: null }), 2600);
+    }
+
+    componentDidMount() {
+        window.addEventListener('keydown', this.konamiHandler);
+        window.addEventListener('keydown', this.handleArrowDown);
+        window.addEventListener('keyup',   this.handleArrowUp);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('keydown', this.konamiHandler);
+        window.removeEventListener('keydown', this.handleArrowDown);
+        window.removeEventListener('keyup',   this.handleArrowUp);
+        clearTimeout(this._konamiTimer);
     }
 
     showSettings() {
         if (this.state.mode === 'settings') {
-            this.setState({mode: 'normal'})
+            this.setState({ mode: 'normal' });
         } else {
-            this.setState({mode: 'settings'})
+            this.setState({ mode: 'settings', pilotMode: false });
         }
     }
 
     showShare() {
         if (this.state.mode === 'share') {
-            this.setState({mode: 'normal'})
+            this.setState({ mode: 'normal' });
         } else {
-            this.setState({mode: 'share'})
+            this.setState({ mode: 'share', pilotMode: false });
         }
     }
 
     showInfo() {
         if (this.state.mode === 'info') {
-            this.setState({mode: 'normal'})
+            this.setState({ mode: 'normal' });
         } else {
-            this.setState({mode: 'info'})
+            this.setState({ mode: 'info', pilotMode: false });
         }
     }
 
@@ -256,6 +323,8 @@ class App extends React.Component {
             } else {
                 nextTrack = 0;
             }
+            // skip hidden track 2 (index 1) unless unlocked
+            if (!this.state.track2Unlocked && nextTrack === 1) nextTrack = 2;
         }
         if(type && type === 'prev') {
             if(curTrack <= 0) {
@@ -263,6 +332,8 @@ class App extends React.Component {
             } else {
                 --nextTrack;
             }
+            // skip hidden track 2 (index 1) unless unlocked
+            if (!this.state.track2Unlocked && nextTrack === 1) nextTrack = 0;
         }
         if (type === "typeChange") {
             this.currentTime = this.audio.currentTime;
@@ -323,10 +394,27 @@ class App extends React.Component {
         if (this.isAndroid || this.isIOS || this.isConsole || this.queryParams.animation === 'hide') {
             return false;
         }
-        return(
-            <span className={this.state.visual === 'space' ? 'switcherHeader visual active' : 'switcherHeader visual'} onClick={this.switchAnimation}>
-                SPACE. {this.renderVisualButton()} SPECTR
-            </span>
+        return (
+            <div className="vis-toggles">
+                <label className="vis-label">
+                    <input
+                        type="checkbox"
+                        className="vis-check"
+                        checked={this.state.showSpace}
+                        onChange={() => this.setState(s => ({ showSpace: !s.showSpace }))}
+                    />
+                    <span>SPACE</span>
+                </label>
+                <label className="vis-label">
+                    <input
+                        type="checkbox"
+                        className="vis-check"
+                        checked={this.state.showSpectr}
+                        onChange={() => this.setState(s => ({ showSpectr: !s.showSpectr }))}
+                    />
+                    <span>SPECTR</span>
+                </label>
+            </div>
         );
     }
 
@@ -391,11 +479,29 @@ class App extends React.Component {
     }
 
     renderSettingsIcon() {
+        const { pilotMode, mode } = this.state;
         return (
             <>
-                <span className={"ccIcon material-icons notranslate  md-24 buttonIcon buttonIcon_small " + (this.state.mode === 'info' ? 'active' : '')} onClick={this.showInfo} >{(this.state.mode === 'info' ? 'close': 'info')}</span>
-                <span className={"settingsIcon material-icons notranslate  md-24 buttonIcon buttonIcon_small " + (this.state.mode === 'settings' ? 'active' : '')} onClick={this.showSettings} >{(this.state.mode === 'settings' ? 'close': 'settings')}</span>
-                <span className={"shareIcon material-icons notranslate  md-24 buttonIcon buttonIcon_small " + (this.state.mode === 'share' ? 'active' : '')} onClick={this.showShare} >{(this.state.mode === 'share' ? 'close': 'share')}</span>
+                <span
+                    className={"pilotIcon material-icons notranslate md-24 buttonIcon buttonIcon_small" + (pilotMode ? ' active' : '')}
+                    onClick={() => this.setState(s => ({
+                        pilotMode: !s.pilotMode,
+                        ...(s.pilotMode ? {} : { mode: 'normal', showSpectr: true }),
+                    }))}
+                    title="Pilot mode"
+                >
+                    {pilotMode ? 'close' : (
+                        <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+                            <rect x="3" y="13" width="18" height="8" rx="2"/>
+                            <rect x="10.5" y="5" width="3" height="9" rx="1.5"/>
+                            <circle cx="12" cy="4.5" r="2.5"/>
+                            <circle cx="7.5" cy="17" r="2" fill="#e04040"/>
+                        </svg>
+                    )}
+                </span>
+                <span className={"ccIcon material-icons notranslate md-24 buttonIcon buttonIcon_small " + (mode === 'info' ? 'active' : '')} onClick={this.showInfo}>{mode === 'info' ? 'close' : 'info'}</span>
+                <span className={"settingsIcon material-icons notranslate md-24 buttonIcon buttonIcon_small " + (mode === 'settings' ? 'active' : '')} onClick={this.showSettings}>{mode === 'settings' ? 'close' : 'settings'}</span>
+                <span className={"shareIcon material-icons notranslate md-24 buttonIcon buttonIcon_small " + (mode === 'share' ? 'active' : '')} onClick={this.showShare}>{mode === 'share' ? 'close' : 'share'}</span>
             </>
         );
     }
@@ -416,8 +522,8 @@ class App extends React.Component {
     }
 
     renderVisualizer() {
-        if (!this.isIOS && !this.isAndroid && !this.isConsole && this.state.visual === 'spectr') {
-            return(<Visualiser startAnimation={this.state.play} analyser={this.analyser} />);
+        if (!this.isIOS && !this.isAndroid && !this.isConsole && this.state.showSpectr) {
+            return(<Visualiser startAnimation={this.state.play} analyser={this.analyser} keys={this.state.keys} />);
         }
     }
 
@@ -489,18 +595,9 @@ class App extends React.Component {
         return(<span className="audioSwitcher material-icons notranslate  md-36">toggle_on</span>);
     }
 
-    renderVisualButton() {
-        if (this.state.visual === 'space') {
-            return (
-                <span className="audioSwitcher material-icons notranslate  md-36">toggle_off</span>
-            );
-        }
-        return(<span className="audioSwitcher material-icons notranslate  md-36">toggle_on</span>);
-    }
-
     renderSpace() {
-        if (this.state.visual === 'space' && this.queryParams.animation !== 'hide') {
-            return (<Space />);
+        if (this.state.showSpace && this.queryParams.animation !== 'hide') {
+            return (<Space keys={this.state.keys} />);
         }
     }
 
@@ -523,13 +620,6 @@ class App extends React.Component {
         this.analyser.connect(this.audioContext.destination);
     }
 
-    switchAnimation() {
-        if (this.state.visual === 'space') {
-            this.setState({visual: 'spectr'});
-        } else {
-            this.setState({visual: 'space'});
-        }
-    }
 
     setTitle() {
         const text = this.albumArray[this.state.currentTrack].title;
@@ -538,32 +628,54 @@ class App extends React.Component {
             characters.push(<span key={'char-' + i} className={'char char-' + i}>{text[i]}</span>);
         }
         return characters;
-    }info__link
+    }
 
     renderScene() {
         if (this.state.play) {
+            const { keys, mode, pilotMode } = this.state;
+            const tiltX = (keys.ArrowRight ? 1 : 0) - (keys.ArrowLeft ? 1 : 0);
+            const tiltY = (keys.ArrowDown  ? 1 : 0) - (keys.ArrowUp   ? 1 : 0);
+            // Tilt whole player: in pilot mode always active; otherwise only when no panel open
+            const shouldTilt = pilotMode || mode === 'normal';
+            const shipStyle = {
+                transform: `translate(-50%, -50%) perspective(700px) rotate(${shouldTilt ? tiltX * 22 : 0}deg) rotateX(${shouldTilt ? tiltY * 15 : 0}deg)`,
+                transition: 'transform 0.15s ease-out',
+            };
+
             return (
                 <>
                     {this.renderVisualizer(true)}
-                    <div className={'playerWrapper'}>
+                    <div className={'playerWrapper'} style={shipStyle}>
 
+                        {/* In pilot mode show boy.gif, otherwise current track image */}
                         <div className={"imageWrapper"}>
-                            {this.renderImage()}
+                            {pilotMode
+                                ? <img className={"trackImage"} src={boy} alt={"pilot"} />
+                                : this.renderImage()
+                            }
                             <div className={"trackTitle"}>{this.setTitle()}</div>
                         </div>
+
                         <CircularInput className={'progressSwitcher'} value={this.playTime ? this.playTime : 0} onChange={this.setTrackPosition} radius={166}>
                             <CircularTrack strokeWidth={4} stroke="#86c06c"/>
                             <CircularProgress strokeWidth={10} stroke="#dff8d0"/>
                         </CircularInput>
+
+                        {/* playerMenu: prev/play/next hidden in pilot mode */}
                         <section className={'playerMenu'}>
-                            <span className={"switcher next material-icons notranslate  md-36 buttonIcon"} onClick={this.initAudio.bind(this, 'next')}>
-                                arrow_forward_ios
-                            </span>
-                                <span className={"switcher prev material-icons notranslate  md-36 buttonIcon"} onClick={this.initAudio.bind(this, 'prev')}>
-                                arrow_back_ios
-                            </span>
-                            {this.renderButton()}
+                            {!pilotMode && (
+                                <>
+                                    <span className={"switcher next material-icons notranslate  md-36 buttonIcon"} onClick={this.initAudio.bind(this, 'next')}>
+                                        arrow_forward_ios
+                                    </span>
+                                    <span className={"switcher prev material-icons notranslate  md-36 buttonIcon"} onClick={this.initAudio.bind(this, 'prev')}>
+                                        arrow_back_ios
+                                    </span>
+                                    {this.renderButton()}
+                                </>
+                            )}
                         </section>
+
                         <section className={'subMenu'}>
                             {this.renderSettingsIcon()}
                         </section>
@@ -572,7 +684,7 @@ class App extends React.Component {
                         {this.renderInfo()}
                     </div>
                 </>
-            )
+            );
         } else {
             return (
                 <>
@@ -583,11 +695,62 @@ class App extends React.Component {
         }
     }
 
+    renderKonamiPanel() {
+        if (!this.state.showKonamiPanel) return null;
+        const locked = !this.state.track2Unlocked;
+        return (
+            <div className="konami-panel" onClick={e => e.stopPropagation()}>
+                <div className="konami-panel__header">
+                    <span className="konami-panel__label">◆ C L A S S I F I E D ◆</span>
+                    <span
+                        className="konami-panel__close material-icons notranslate md-18"
+                        onClick={() => this.setState({ showKonamiPanel: false })}
+                    >close</span>
+                </div>
+
+                <div className="konami-panel__track">
+                    S_TN * HOLY ROCKET
+                </div>
+
+                <div className="konami-panel__status">
+                    <span className={`konami-panel__dot ${locked ? 'konami-panel__dot--locked' : 'konami-panel__dot--unlocked'}`} />
+                    {locked ? 'TRACK HIDDEN' : 'TRACK VISIBLE'}
+                </div>
+
+                <button
+                    className={`konami-panel__btn ${locked ? 'konami-panel__btn--unlock' : 'konami-panel__btn--lock'}`}
+                    onClick={this.confirmKonami.bind(this)}
+                >
+                    {locked ? '🚀 UNLOCK TRACK' : '🔒 HIDE TRACK'}
+                </button>
+            </div>
+        );
+    }
+
     render() {
         return(
             <div className="App" >
                 {this.renderSpace()}
+                <div className="galaxy-layer" />
                 {this.renderScene()}
+
+                {/* Konami panel + backdrop */}
+                {this.state.showKonamiPanel && (
+                    <div
+                        className="konami-backdrop"
+                        onClick={() => this.setState({ showKonamiPanel: false })}
+                    />
+                )}
+                {this.renderKonamiPanel()}
+
+                {/* Brief flash after confirm */}
+                {this.state.konamiFlash && (
+                    <div className={`konami-flash konami-flash--${this.state.konamiFlash}`}>
+                        {this.state.konamiFlash === 'unlocked'
+                            ? '🚀 HOLY ROCKET  UNLOCKED'
+                            : '🔒 HOLY ROCKET  HIDDEN'}
+                    </div>
+                )}
             </div>
         )
     }

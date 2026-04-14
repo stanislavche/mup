@@ -1,70 +1,149 @@
-# Getting Started with Create React App
+<div align="center">
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<img src="./public/img/SEO.png" alt="MUP — S_TN Music Player" width="520" />
 
-## Available Scripts
+<br/>
 
-In the project directory, you can run:
+<img src="https://raw.githubusercontent.com/stanislavche/mup/master/src/image/mup.gif" alt="MUP animated logo" width="160" />
 
-### `yarn start`
+# MUP — S_TN Music Player
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+> Чиптюн-плеер для альбома **S_TN**, созданного на одном **Nintendo Game Boy Original** + [LittleSoundDJ](https://www.littlesounddj.com/)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+[![Live Demo](https://img.shields.io/badge/▶%20Live%20Demo-s--tn.space%2Fmup-4CAF50?style=for-the-badge)](https://s-tn.space/mup)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-stanislavche.github.io%2Fmup-222?style=for-the-badge&logo=github)](https://stanislavche.github.io/mup)
+[![React](https://img.shields.io/badge/React-17-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
+[![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
 
-### `yarn test`
+</div>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `yarn build`
+## 🌌 Демо
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+<div align="center">
+<img src="https://raw.githubusercontent.com/stanislavche/mup/master/src/image/spacetime.gif" alt="Space animation preview" width="360" />
+</div>
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## ✨ О проекте
 
-### `yarn eject`
+**MUP** — браузерный плеер для альбома **S_TN**. Все 10 треков написаны исключительно на одном оригинальном Game Boy с картриджем LittleSoundDJ. Проект сочетает пиксельную эстетику, гиперпространственную анимацию звёзд и глубокий чиптюн-звук.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+🎨 Обложки треков — художник **[@Katika_Taoka](https://www.instagram.com/katika_taoka_art/)**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## 🚀 Возможности
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+| Фича | Описание |
+|---|---|
+| 🎵 **10 треков × 2 версии** | Обработанная и raw с Game Boy |
+| 🌌 **Hyperspace starfield** | GPU-ускоренная анимация звёзд на Canvas 2D (`alpha: false`) |
+| 🎛️ **Эквалайзер** | Бас + высокие частоты в реальном времени через Web Audio API |
+| 🔊 **Громкость** | Круговой слайдер |
+| 📤 **Sharing** | VK, Telegram, Twitter, WhatsApp и другие |
+| 📱 **Responsive** | iOS, Android, Desktop |
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 🎶 Треклист
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+| # | Название |
+|---|----------|
+| 1 | SERENITY |
+| 2 | HOLY ROCKET |
+| 3 | PROMISE |
+| 4 | SPACE TIME |
+| 5 | POPCORN |
+| 6 | GOAL ACHIEVEMENT |
+| 7 | CRYOGENIC DREAM |
+| 8 | STARWAY |
+| 9 | IMPETUS *(feat. BALLONBEAR)* |
+| 10 | RAILROAD SWITCH |
 
-### Code Splitting
+📀 [Добавить в библиотеку (стриминг)](https://band.link/kR9Zc)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+## ⚡ GPU-оптимизация анимации
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Starfield написан на Canvas 2D с несколькими ключевыми оптимизациями:
 
-### Making a Progressive Web App
+- **`alpha: false`** при создании контекста — браузер не выполняет альфа-компостинг с DOM, что снимает значительную нагрузку с GPU
+- **`desynchronized: true`** — canvas рендерится асинхронно с основным потоком DOM
+- **`will-change: transform`** — CSS-подсказка браузеру для выделения отдельного GPU-слоя
+- **Batch rendering** — 250 звёзд рисуются за 5 вызовов `ctx.fill()` (по бакетам яркости) вместо 250
+- **Перспективная проекция** `sx = cx + x * (FOV / z)` — правильный вылет от центра к краям
+- **Целые пиксели** (`| 0`) — никакого субпиксельного сглаживания
+- **FPS cap 30** — равномерный темп анимации, экономия на мобильных
+- **Равномерный z-спред при старте** — нет «пустого экрана» при загрузке
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+---
 
-### Advanced Configuration
+## 🛠️ Технологии
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+| Технология | Версия | Назначение |
+|---|---|---|
+| [React](https://reactjs.org/) | 17 | UI-фреймворк |
+| [react-circular-input](https://github.com/peterpme/react-circular-input) | 0.2.x | Круговые слайдеры |
+| [react-share](https://github.com/nygardk/react-share) | 4.x | Кнопки шаринга |
+| [sass](https://sass-lang.com/) | 1.x | Стили SCSS |
+| [material-icons](https://github.com/marella/material-icons) | 0.5.x | Иконки |
+| [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API) | native | Эквалайзер и визуализатор |
+| [gh-pages](https://github.com/tschaub/gh-pages) | 3.x | Деплой |
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## 💻 Запуск локально
 
-### `yarn build` fails to minify
+### Требования
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- Node.js ≥ 14
+- Yarn
+
+### Установка
+
+```bash
+# Клонировать репозиторий
+git clone https://github.com/stanislavche/mup.git
+cd mup
+
+# Установить зависимости
+yarn install
+
+# Запустить в dev-режиме
+yarn start
+```
+
+Приложение откроется на [http://localhost:3000](http://localhost:3000)
+
+### Сборка и деплой
+
+```bash
+# Продакшн-сборка
+yarn build
+
+# Деплой на GitHub Pages
+yarn deploy
+```
+
+---
+
+## 👤 Авторы
+
+- 🎵 **Музыка:** [S_TN](https://s-tn.space/mup)
+- 🎨 **Арт:** [@Katika_Taoka](https://www.instagram.com/katika_taoka_art/)
+- 💻 **Разработка:** [stanislavche](https://github.com/stanislavche)
+
+---
+
+<div align="center">
+
+*Все треки записаны на одном Nintendo Game Boy Original*  
+*с использованием картриджа LittleSoundDJ*
+
+**🎮 One console. One cartridge. Ten tracks.**
+
+</div>
